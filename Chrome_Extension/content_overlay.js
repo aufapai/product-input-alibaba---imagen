@@ -591,7 +591,7 @@
       }
 
       if (chkApprove && chkApprove.checked) {
-        const promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']");
+        let promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']");
         const actionBtn = findFlowAgentActionButton(promptBox);
         if (actionBtn && !clickedBtns.has(actionBtn)) {
           clickedBtns.add(actionBtn);
@@ -683,7 +683,7 @@
       .map((j) => `[${j.slot_label}]\n${j.prompt}`)
       .join("\n\n");
 
-    const promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']");
+    let promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']");
     const refImgs = getSelectedImagesFromProduct();
     if (refImgs.length > 0) {
       const dt = await buildDataTransferFromImages([refImgs[0]], 1);
@@ -735,23 +735,33 @@
       }
     }
 
+    // Re-query promptBox after image attachment settles (Google Flow re-renders Slate composer when Bahan chip is added)
+    await sleep(600);
+    promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']");
     if (promptBox) {
-      promptBox.focus();
-      if (promptBox.tagName === "TEXTAREA") {
-        setReactInputValue(promptBox, combinedAgentPrompt);
-      } else {
-        document.execCommand("selectAll", false, null);
-        const inserted = document.execCommand("insertText", false, combinedAgentPrompt);
-        if (!inserted || !(promptBox.innerText || "").includes("Slot")) {
-          promptBox.textContent = combinedAgentPrompt;
-          promptBox.dispatchEvent(new InputEvent("input", { bubbles: true, data: combinedAgentPrompt, inputType: "insertText" }));
+      for (let attempt = 0; attempt < 2; attempt++) {
+        promptBox.click();
+        promptBox.focus();
+        if (promptBox.tagName === "TEXTAREA") {
+          setReactInputValue(promptBox, combinedAgentPrompt);
+        } else {
+          document.execCommand("selectAll", false, null);
+          const inserted = document.execCommand("insertText", false, combinedAgentPrompt);
+          if (!inserted || !(promptBox.innerText || "").includes("Slot")) {
+            promptBox.textContent = combinedAgentPrompt;
+            promptBox.dispatchEvent(new InputEvent("input", { bubbles: true, data: combinedAgentPrompt, inputType: "insertText" }));
+          }
         }
+        await sleep(350);
+        const currentTxt = (promptBox.value !== undefined ? promptBox.value : promptBox.innerText) || "";
+        if (currentTxt.includes("Slot")) break;
+        promptBox = document.querySelector("textarea, div[contenteditable='true'], [role='textbox']") || promptBox;
       }
     }
 
     if (chkApprove.checked && !isPaused && promptBox) {
       let sendBtn = null;
-      for (let t = 0; t < 10; t++) {
+      for (let t = 0; t < 12; t++) {
         await sleep(250);
         sendBtn = findFlowSendButton(promptBox);
         if (sendBtn) break;
