@@ -237,7 +237,14 @@
       return;
     }
 
-    displayImgs.slice(0, 6).forEach((im) => selectedImageUrls.add(im.url));
+    if (pageType === "flow") {
+      const heroImg =
+        displayImgs.find((im) => /hero/i.test(im.type || "") || /^hero_/i.test(im.filename || "")) ||
+        displayImgs[0];
+      if (heroImg) selectedImageUrls.add(heroImg.url);
+    } else {
+      displayImgs.slice(0, 6).forEach((im) => selectedImageUrls.add(im.url));
+    }
     thumbGrid.innerHTML = displayImgs
       .map((im, idx) => {
         const isChecked = selectedImageUrls.has(im.url);
@@ -416,8 +423,10 @@
       return { ok: false, message: "Tidak ada foto terpilih" };
     }
 
-    setLog(`⏳ Mengirim ${imgs.length} foto terpilih (${p.master_sku})...`);
-    const dt = await buildDataTransferFromImages(imgs, 6);
+    const maxUpload = pageType === "flow" ? 1 : 6;
+    const targetImgs = pageType === "flow" ? [imgs[0]] : imgs;
+    setLog(`⏳ Mengirim ${Math.min(targetImgs.length, maxUpload)} foto terpilih (${p.master_sku})...`);
+    const dt = await buildDataTransferFromImages(targetImgs, maxUpload);
     if (dt.files.length === 0) {
       setLog("❌ Gagal mengambil file gambar dari localhost:8888.");
       return { ok: false, message: "Gagal fetch gambar lokal" };
