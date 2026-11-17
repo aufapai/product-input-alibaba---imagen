@@ -947,6 +947,51 @@
       lockedFields.push({ el: weightEl, val: String(p.attributes.weight_kg) });
     }
 
+    // Auto-select dropdown & multi-select attributes (Upper/Outsole/Midsole/Lining Material, Gender, Boot Height, Toe Style, Unit)
+    async function selectAlibabaDropdownOption(labelRx, valueRxList) {
+      const triggers = Array.from(document.querySelectorAll("[role='combobox'], [aria-haspopup='listbox'], .next-select, button"))
+        .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+      const trigger = triggers.find((el) => {
+        const item = el.closest(".next-form-item, [class*='form-item'], [class*='field'], tr, div");
+        return item && labelRx.test((item.innerText || "").slice(0, 100));
+      });
+      if (!trigger) return false;
+      trigger.click();
+      await sleep(320);
+      const options = Array.from(document.querySelectorAll("[role='option'], li.next-menu-item, .next-select-menu-item, label"))
+        .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+      for (const rx of valueRxList) {
+        const opt = options.find((el) => rx.test((el.innerText || "").trim()));
+        if (opt) {
+          opt.click();
+          await sleep(180);
+          document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+          await sleep(120);
+          return true;
+        }
+      }
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+      return false;
+    }
+
+    const attrs = p.attributes || {};
+    let dropdownHits = 0;
+    const ddTasks = [
+      [/upper\s*material/i, [/pvc/i, /polyvinyl/i, /rubber/i]],
+      [/outsole\s*material/i, [/pvc/i, /rubber/i, /nitrile/i]],
+      [/midsole\s*material/i, [new RegExp(attrs.midsole_material || "pvc", "i"), /pvc/i, /steel/i]],
+      [/lining\s*material/i, [/pvc/i, /cotton/i, /polyester/i]],
+      [/gender/i, [new RegExp(attrs.gender || "unisex", "i"), /unisex/i, /men/i]],
+      [/boot\s*height/i, [new RegExp(attrs.boot_height || "mid-calf", "i"), /mid-calf/i, /knee/i, /ankle/i]],
+      [/toe\s*style/i, [new RegExp(attrs.toe_style || "round toe", "i"), /round toe/i, /steel toe/i]],
+      [/\bunit\b/i, [/^pair/i, /pairs/i]]
+    ];
+    for (const [lRx, vList] of ddTasks) {
+      if (isPaused) break;
+      if (await selectAlibabaDropdownOption(lRx, vList)) dropdownHits++;
+    }
+    if (dropdownHits > 0) setLog(`✓ ${dropdownHits} atribut dropdown Alibaba terpilih otomatis.`);
+
     setProgress(80, "⏳ [4/5] Mengisi MOQ & harga FOB USD...");
     const moqEl = findField(/moq|min\.?\s*order|quantity\s*price|>=|min.*qty/, /price/);
     if (moqEl) {

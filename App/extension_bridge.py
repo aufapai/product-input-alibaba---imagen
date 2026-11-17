@@ -315,6 +315,26 @@ def get_ext_product(sku: str) -> Optional[Dict[str, Any]]:
     imgs = _build_local_image_list(conn, row["master_sku"], row["primary_image_url"] or "")
     conn.close()
 
+    rdict = dict(row)
+    shaft_cm = float(rdict.get("shaft_height_cm") or 30.0)
+    if "kids" in cat_lower or "anak" in (rdict.get("model_name") or "").lower():
+        gender_val = "Children"
+    else:
+        gender_val = "Unisex"
+
+    if shaft_cm >= 32:
+        boot_height_val = "Knee-High"
+    elif shaft_cm >= 18:
+        boot_height_val = "Mid-Calf"
+    else:
+        boot_height_val = "Ankle"
+
+    steel_raw = (rdict.get("steel_toe_cap") or "").lower()
+    toe_style_val = "Steel Toe" if ("steel" in steel_raw and "non" not in steel_raw and "tanpa" not in steel_raw) else "Round Toe"
+    midsole_raw = (rdict.get("midsole_protection") or "").lower()
+    midsole_mat_val = "Steel" if ("steel" in midsole_raw and "non" not in midsole_raw) else "PVC"
+    feature_val = "Waterproof, Anti-Slip, Oil Resistant" + (", Steel Toe" if toe_style_val == "Steel Toe" else "")
+
     return {
         "success": True,
         "lock": True,
@@ -341,6 +361,14 @@ def get_ext_product(sku: str) -> Optional[Dict[str, Any]]:
             "place_of_origin": row["origin_country"] or "Indonesia",
             "upper_material": row["material_upper"] or "PVC",
             "outsole_material": row["material_outsole"] or "PVC / Nitrile Rubber",
+            "midsole_material": midsole_mat_val,
+            "lining_material": "PVC",
+            "gender": gender_val,
+            "boot_height": boot_height_val,
+            "toe_style": toe_style_val,
+            "feature": feature_val,
+            "season": "All Seasons",
+            "unit": "Pair",
             "color": row["color"] or "Standard",
             "size_range": row["sizes_available"] or "EU 38-44",
             "weight_kg": round(float(row["weight_per_pair_g"] or 1500) / 1000.0, 2),
