@@ -494,9 +494,20 @@
       }
     }
 
-    const fileInputs = findFileInputsDeep();
+    let fileInputs = findFileInputsDeep();
+    if (fileInputs.length === 0 && pageType === "post") {
+      const uploadBtn = Array.from(document.querySelectorAll("button, [role='button']"))
+        .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+        .find((el) => /^(\+\s*)?upload$/i.test((el.innerText || "").trim()));
+      if (uploadBtn) {
+        uploadBtn.click();
+        await sleep(500);
+        fileInputs = findFileInputsDeep();
+      }
+    }
     if (fileInputs.length > 0) {
       fileInputs[0].files = dt.files;
+      fileInputs[0].dispatchEvent(new Event("input", { bubbles: true }));
       fileInputs[0].dispatchEvent(new Event("change", { bubbles: true }));
       const msg = `✓ ${dt.files.length} foto ${p.master_sku} berhasil disuntikkan!`;
       setLog(msg);
@@ -952,36 +963,44 @@
   }
 
   async function selectAlibabaPostCategory(p) {
-    const catTrigger = Array.from(document.querySelectorAll("button, [role='button'], [role='combobox'], div[class*='select']"))
+    const triggers = Array.from(document.querySelectorAll("div, span, button, [role='button'], [role='combobox']"))
       .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
-      .find((el) => /select a category/i.test((el.innerText || el.getAttribute("aria-label") || "").trim()));
+      .filter((el) => /^select a category$/i.test((el.innerText || "").trim()));
+    const catTrigger = triggers[triggers.length - 1];
     if (!catTrigger) return false;
 
     catTrigger.click();
-    await sleep(600);
+    await sleep(700);
 
     const catLower = `${p.Category_Path || ""} ${p.Photobank_Group_Label || ""} ${p.Product_Name || ""}`.toLowerCase();
     const patterns = [];
     if (catLower.includes("safety") || catLower.includes("petrova")) {
-      patterns.push(/work\s*&\s*safety\s*shoes/i, /safety\s*footwear/i, /safety\s*boots/i, /rain\s*boots/i);
+      patterns.push(/safety\s*shoes/i, /foot\s*protection.*safety/i, /rain\s*boots/i);
+    } else if (catLower.includes("chef")) {
+      patterns.push(/chef\s*shoes/i, /rain\s*boots/i);
+    } else if (catLower.includes("biker") || catLower.includes("moto")) {
+      patterns.push(/moto\s*boots/i, /cycling\s*footwear/i, /rain\s*boots/i);
     } else if (catLower.includes("sandal") || catLower.includes("clog") || catLower.includes("slides")) {
-      patterns.push(/slides\s*&\s*slippers/i, /clogs/i, /sandals/i, /rain\s*boots/i);
+      patterns.push(/men'?s\s*shoes\s*>\s*clogs/i, /sandals/i, /clogs/i, /rain\s*boots/i);
     } else if (catLower.includes("kasual") || catLower.includes("sneaker") || catLower.includes("pantofel") || catLower.includes("977")) {
-      patterns.push(/casual\s*shoes/i, /sneakers/i, /loafers/i, /rain\s*boots/i);
-    } else if (catLower.includes("kids") || catLower.includes("children")) {
-      patterns.push(/children.*rain\s*boots/i, /kids.*boots/i, /rain\s*boots/i);
+      patterns.push(/other\s*shoes/i, /casual\s*shoes/i, /rain\s*boots/i);
     } else {
-      patterns.push(/rain\s*boots/i, /work\s*&\s*safety\s*shoes/i, /functional\s*shoes/i);
+      patterns.push(/rain\s*boots/i, /safety\s*shoes/i, /martin\s*boots/i);
     }
 
-    const candidates = Array.from(document.querySelectorAll("label, li, [role='option'], [role='radio'], [role='menuitem'], div[class*='option']"))
-      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+    const candidates = Array.from(document.querySelectorAll("label, li, [role='option'], [role='radio'], [role='menuitem'], div, span"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+      .filter((el) => {
+        const txt = (el.innerText || "").trim();
+        return txt.includes(">") && txt.length < 180;
+      });
 
     for (const rx of patterns) {
       const hit = candidates.find((el) => rx.test((el.innerText || "").trim()) && !/candle|perfume|fragrance/i.test(el.innerText || ""));
       if (hit) {
-        hit.click();
-        await sleep(1100);
+        const radio = hit.querySelector("input[type='radio']") || hit;
+        radio.click();
+        await sleep(1400);
         return true;
       }
     }
@@ -997,7 +1016,7 @@
     if (catPicked) setLog(`✓ Kategori sepatu dipilih sesuai ${p.Photobank_Group_Label || p.Category_Path}.`);
 
     setProgress(35, "⏳ [2/5] Menyuntikkan foto produk...");
-    if (selectedImageUrls.size > 0 && findFileInputsDeep().length > 0) {
+    if (selectedImageUrls.size > 0) {
       await injectSelectedPhotos(p);
       await sleep(500);
     }
@@ -1113,20 +1132,46 @@
       lockedFields.push({ el: priceMaxEl, val: String(p.Price_Max) });
     }
 
-    setProgress(92, "⏳ [5/5] Mengisi deskripsi B2B...");
+    setProgress(92, "⏳ [5/5] Mengisi deskripsi B2B (Custom Editor)...");
     const descText = buildAlibabaPublishDescription(p);
-    const descArea = findField(/detailed\s*description|product\s*description/);
-    if (descArea) {
-      setReactInputValue(descArea, descText);
-      lockedFields.push({ el: descArea, val: descText });
-    } else {
-      const ceDesc = Array.from(document.querySelectorAll("[contenteditable='true']"))
-        .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
-        .pop();
-      if (ceDesc) {
-        ceDesc.focus();
-        ceDesc.innerText = descText;
-        ceDesc.dispatchEvent(new InputEvent("input", { bubbles: true, data: descText, inputType: "insertText" }));
+    const customEditorLbl = Array.from(document.querySelectorAll("label, [role='radio'], span"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+      .find((el) => /^custom\s*editor$/i.test((el.innerText || "").trim()));
+    if (customEditorLbl) {
+      customEditorLbl.click();
+      await sleep(600);
+    }
+
+    const tinyIframe = Array.from(document.querySelectorAll("iframe"))
+      .find((ifr) => /rich text area|tinymce/i.test(`${ifr.title || ""} ${ifr.id || ""}`));
+    let descFilled = false;
+    if (tinyIframe && tinyIframe.contentDocument && tinyIframe.contentDocument.body) {
+      const tb = tinyIframe.contentDocument.body;
+      const htmlContent = descText
+        .split("\n")
+        .map((line) => `<p>${line.replace(/</g, "&lt;").replace(/>/g, "&gt;") || "<br>"}</p>`)
+        .join("");
+      tb.innerHTML = htmlContent;
+      tb.dispatchEvent(new Event("input", { bubbles: true }));
+      tb.dispatchEvent(new Event("change", { bubbles: true }));
+      tb.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
+      descFilled = true;
+    }
+
+    if (!descFilled) {
+      const descArea = findField(/detailed\s*description|product\s*description/);
+      if (descArea) {
+        setReactInputValue(descArea, descText);
+        lockedFields.push({ el: descArea, val: descText });
+      } else {
+        const ceDesc = Array.from(document.querySelectorAll("[contenteditable='true']"))
+          .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+          .pop();
+        if (ceDesc) {
+          ceDesc.focus();
+          ceDesc.innerText = descText;
+          ceDesc.dispatchEvent(new InputEvent("input", { bubbles: true, data: descText, inputType: "insertText" }));
+        }
       }
     }
 
