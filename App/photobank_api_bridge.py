@@ -188,6 +188,50 @@ def fetch_google_ai_studio_image(prompt: str, api_key: str, target_size: int = 1
         print(f"[Google AI Studio Error] {e}")
     return None
 
+OPENAI_DEFAULT_KEY = "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"
+
+def fetch_openai_dalle_image(prompt: str, api_key: Optional[str] = None, target_size: int = 1024, model: str = "dall-e-3") -> Optional[Image.Image]:
+    """
+    Generate professional studio image using OpenAI Images API (DALL-E 3).
+    Endpoint: https://api.openai.com/v1/images/generations
+    """
+    key = (api_key or OPENAI_DEFAULT_KEY).strip()
+    if not key or not key.startswith("sk-"):
+        print("[OpenAI Error] Invalid or missing OpenAI API key (must start with sk-)")
+        return None
+
+    try:
+        url = "https://api.openai.com/v1/images/generations"
+        headers = {
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": model,
+            "prompt": prompt,
+            "n": 1,
+            "size": "1024x1024",
+            "quality": "standard",
+            "response_format": "b64_json"
+        }
+        resp = requests.post(url, json=payload, headers=headers, timeout=60)
+        if resp.status_code == 200:
+            data = resp.json()
+            items = data.get("data", [])
+            if items and "b64_json" in items[0]:
+                raw_bytes = base64.b64decode(items[0]["b64_json"])
+                return Image.open(io.BytesIO(raw_bytes)).convert("RGB")
+            elif items and "url" in items[0]:
+                img_url = items[0]["url"]
+                img_resp = requests.get(img_url, timeout=30)
+                if img_resp.status_code == 200:
+                    return Image.open(io.BytesIO(img_resp.content)).convert("RGB")
+        else:
+            print(f"[OpenAI DALL-E Error] HTTP {resp.status_code}: {resp.text[:200]}")
+    except Exception as e:
+        print(f"[OpenAI DALL-E Error] {e}")
+    return None
+
 def find_catalog_candidate(product_name: str, slot_suffix: str = "03") -> Optional[str]:
     """Finds matching catalog photo for outsole tread (03) or contextual usage (04)."""
     if not os.path.exists(CATALOG_IMAGES_DIR):
@@ -364,6 +408,8 @@ def generate_product_variations_custom(
         gen_img = None
         if engine == "photoroom":
             gen_img = fetch_photoroom_segmented_image(hero_src, api_key=api_key, target_size=target_size)
+        elif engine in ["openai_dalle", "dalle3", "openai"]:
+            gen_img = fetch_openai_dalle_image(slot1_prompt, api_key=api_key, target_size=target_size)
         elif engine == "colab_diffusers" and ngrok_url:
             gen_img = fetch_colab_ngrok_image(hero_src, slot1_prompt, ngrok_url, target_size=target_size)
         elif engine == "google_ai_studio" and api_key:
@@ -400,6 +446,8 @@ def generate_product_variations_custom(
         side_source_file = side_src if os.path.exists(side_src) else (hero_src if os.path.exists(hero_src) else None)
         if engine == "photoroom" and side_source_file:
             gen_img2 = fetch_photoroom_segmented_image(side_source_file, api_key=api_key, target_size=target_size)
+        elif engine in ["openai_dalle", "dalle3", "openai"]:
+            gen_img2 = fetch_openai_dalle_image(slot2_prompt, api_key=api_key, target_size=target_size)
         elif engine == "colab_diffusers" and ngrok_url and side_source_file:
             gen_img2 = fetch_colab_ngrok_image(side_source_file, slot2_prompt, ngrok_url, target_size=target_size)
         elif engine == "google_ai_studio" and api_key:
@@ -435,7 +483,9 @@ def generate_product_variations_custom(
         
         slot3_prompt = f"extreme close-up macro commercial product photo of the bottom outsole tread of {raw_title}, showcasing heavy-duty anti-slip cleat lugs and mud-release channel patterns, pure seamless white background (RGB 255,255,255), studio macro lighting, square 1:1, sharp focus, no text"
         gen_img3 = None
-        if engine == "google_ai_studio" and api_key:
+        if engine in ["openai_dalle", "dalle3", "openai"]:
+            gen_img3 = fetch_openai_dalle_image(slot3_prompt, api_key=api_key, target_size=target_size)
+        elif engine == "google_ai_studio" and api_key:
             gen_img3 = fetch_google_ai_studio_image(slot3_prompt, api_key, target_size)
             if not gen_img3:
                 print("[AI Fallback] Google AI Studio key rejected or failed; using FLUX Generative Diffusion for Slot 3...")
@@ -478,7 +528,9 @@ def generate_product_variations_custom(
         
         slot4_prompt = f"photorealistic outdoor action photo of {raw_title} waterproof boots being actively worn on wet agricultural plantation muddy ground and damp soil, lower-body framing from knees down, realistic daytime sunlight, puddles and mud on boot lower, photorealistic, square 1:1, no faces"
         gen_img4 = None
-        if engine == "colab_diffusers" and ngrok_url and os.path.exists(hero_src):
+        if engine in ["openai_dalle", "dalle3", "openai"]:
+            gen_img4 = fetch_openai_dalle_image(slot4_prompt, api_key=api_key, target_size=target_size)
+        elif engine == "colab_diffusers" and ngrok_url and os.path.exists(hero_src):
             gen_img4 = fetch_colab_ngrok_image(hero_src, slot4_prompt, ngrok_url, target_size=target_size)
         elif engine == "google_ai_studio" and api_key:
             gen_img4 = fetch_google_ai_studio_image(slot4_prompt, api_key, target_size)
@@ -788,6 +840,85 @@ def _legacy_generate_sample_4_variations(sku: str = "SHP-001", folder_name: str 
         "flow_project_url": FLOW_PROJECT_URL,
         "flow_account": FLOW_ACCOUNT_EMAIL,
         "photobank_manifest": MANIFEST_CSV
+    }
+
+def save_uploaded_photobank_slot(
+    sku: str = "SHP-001",
+    folder_name: str = "AP_Boots_XTR_Hitam_Sepatu_Boot_PVC",
+    slot: str = "slot_1_hero",
+    img_bytes: bytes = b"",
+    product_name: Optional[str] = None,
+    category: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Saves an uploaded image directly into Photobank category storage,
+    appends record to manifest CSV, and mirrors to Shopee product folder and Flow folder.
+    """
+    if not img_bytes:
+        return {"success": False, "error": "Image data is empty"}
+
+    ensure_photobank_storage()
+    
+    clean_sku = sku.replace("-", "_")
+    base_name = f"{clean_sku}_{folder_name[:25]}"
+    
+    # Normalize slot suffix
+    slot_clean = str(slot).lower()
+    if "hero" in slot_clean or slot_clean in ["1", "slot_1"]:
+        slot_key = "slot_1_hero"
+        slot_label = "Hero White BG 1:1"
+        shopee_prefix = "hero"
+    elif "side" in slot_clean or slot_clean in ["2", "slot_2"]:
+        slot_key = "slot_2_side"
+        slot_label = "Side Profile 90-degree Lateral 1:1"
+        shopee_prefix = "side"
+    elif "tread" in slot_clean or slot_clean in ["3", "slot_3"]:
+        slot_key = "slot_3_tread"
+        slot_label = "Outsole Tread Cleats 1:1"
+        shopee_prefix = "tread"
+    else:
+        slot_key = "slot_4_usage"
+        slot_label = "Contextual In-Use Outdoor 1:1"
+        shopee_prefix = "usage"
+
+    prod_name = product_name or folder_name.replace("_", " ")
+    if not category:
+        target_category_folder, target_group = resolve_category(prod_name)
+    else:
+        target_category_folder = category
+        target_group = "General"
+
+    dest_dir = os.path.join(PHOTOBANK_DIR, target_category_folder)
+    os.makedirs(dest_dir, exist_ok=True)
+    
+    filename = f"{base_name}_{slot_key}.webp"
+    dest_path = os.path.join(dest_dir, filename)
+
+    try:
+        im = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+        im.save(dest_path, "WEBP", quality=92)
+    except Exception as e:
+        return {"success": False, "error": f"Invalid image format: {e}"}
+
+    # Mirror to Shopee Product folder & Flow
+    prod_folder = os.path.join(SHOPEE_ASSETS_DIR, folder_name)
+    if os.path.exists(prod_folder):
+        shutil.copy2(dest_path, os.path.join(prod_folder, f"{shopee_prefix}_{folder_name}.webp"))
+    if os.path.exists(FLOW_DIR):
+        shutil.copy2(dest_path, os.path.join(FLOW_DIR, f"{shopee_prefix}_{folder_name}.webp"))
+
+    append_manifest_record(f"upload_{slot_key}", filename, sku, prod_name, target_group, target_category_folder, dest_path)
+
+    return {
+        "success": True,
+        "sku": sku,
+        "folder_name": folder_name,
+        "slot": slot_key,
+        "label": slot_label,
+        "filename": filename,
+        "category_folder": target_category_folder,
+        "path": dest_path,
+        "file_size_kb": round(os.path.getsize(dest_path)/1024.0, 1)
     }
 
 def upload_sku_slots_to_photobank_admin(

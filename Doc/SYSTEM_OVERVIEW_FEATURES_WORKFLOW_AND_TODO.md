@@ -184,3 +184,4 @@ Berikut adalah status pekerjaan dan hal-hal yang perlu dilakukan selanjutnya (*S
 4. **Unggah Massal Listing Alibaba:**
    - Lakukan ekspor Excel dari menu **Export Center** -> **Export Flagship 40 to Excel**.
    - Lakukan upload file `.xlsx` tersebut di **Alibaba Seller Center** -> **Manage Products** -> **Batch Upload**.
+

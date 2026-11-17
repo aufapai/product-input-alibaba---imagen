@@ -1092,6 +1092,16 @@
                 </div>
             </div>
 
+            <!-- Master Catalog FINAL Button -->
+            <a href="/final" target="_blank" class="btn" style="background: linear-gradient(135deg, #312e81, #1e1b4b); color: #ffffff; border: 1px solid #818cf8; font-weight: 700; font-size: 0.84rem; padding: 8px 14px; text-decoration: none; display: flex; align-items: center; gap: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);" title="Buka Halaman Master Catalog Terpadu Bebas Duplikasi (125 SKU)">
+                <span>👑</span> Master Catalog (FINAL) ↗
+            </a>
+
+            <!-- Website API Portal & Docs Button -->
+            <a href="/api/docs" target="_blank" class="btn" style="background: linear-gradient(135deg, #065f46, #047857); color: #ffffff; border: 1px solid #10b981; font-weight: 700; font-size: 0.84rem; padding: 8px 14px; text-decoration: none; display: flex; align-items: center; gap: 6px; border-radius: 8px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);" title="Buka Portal Dokumentasi & Pengujian REST API Website">
+                <span>🔌</span> Website API ↗
+            </a>
+
             <!-- Export Center Dropdown -->
             <div class="dropdown">
                 <button class="btn btn-export" onclick="toggleExportMenu()" style="cursor: pointer;">
@@ -1105,6 +1115,7 @@
                     <a href="/api/download/keyword_title_preview_october_40_products.md" target="_blank">📋 40-Flagship Cheatsheet (.md)</a>
                     <hr style="margin: 4px 0; border: none; border-top: 1px solid var(--border);">
                     <a href="javascript:void(0)" onclick="openExportConfirmModal('selected')">✨ Accio 2026 Generator Options...</a>
+                    <a href="/api/docs" target="_blank" style="background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 700;">🔌 Website API & Webhooks Docs ↗</a>
                 </div>
             </div>
         </div>
@@ -1479,6 +1490,34 @@
                                 </div>
                             </div>
                         </label>
+
+                        <!-- Engine 5: OpenAI DALL-E 3 -->
+                        <label style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start;" id="labelEngineOpenAI">
+                            <input type="radio" name="genEngineRadio" id="engineOpenAI" value="openai_dalle" onchange="onSelectGenEngine('openai_dalle')" style="margin-top: 2px; accent-color: #10b981;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: #047857;">🤖 OpenAI DALL-E 3</span>
+                                    <span style="background: #10b981; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 1px 6px; border-radius: 4px;">Top AI Quality</span>
+                                </div>
+                                <div style="font-size: 0.72rem; color: #64748b; margin-top: 3px; line-height: 1.35;">
+                                    Generasi visual AI fotorealistik resolusi tinggi 1024×1024 via OpenAI DALL-E 3 API.
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- OpenAI DALL-E 3 Settings Box -->
+                    <div id="openaiKeyBox" style="display: none; margin-top: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 10px 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                            <label style="font-size: 0.78rem; font-weight: 800; color: #065f46;">
+                                OpenAI API Key (<code style="background: rgba(255,255,255,0.7); padding: 1px 4px; border-radius: 3px;">sk-proj-...</code>):
+                            </label>
+                            <span style="font-size: 0.72rem; color: #047857; font-weight: 700;">✓ Model: DALL-E 3 (1024x1024)</span>
+                        </div>
+                        <input type="password" id="inputOpenAiKey" value="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" style="width: 100%; padding: 6px 10px; border: 1px solid #6ee7b7; border-radius: 6px; font-size: 0.8rem; font-family: monospace; background: #ffffff;">
+                        <div style="font-size: 0.72rem; color: #047857; margin-top: 4px;">
+                            ✓ Terkoneksi ke OpenAI Images API (Tersimpan di <code>Doc/OPENAI_API_KEY.txt</code>).
+                        </div>
                     </div>
 
                     <!-- Photoroom Key Settings Box -->
@@ -1760,7 +1799,7 @@
                                 <span style="font-size: 0.7rem; color: #059669; font-weight: 700;" id="flowBadgeSlot1">✅ Ready</span>
                             </div>
                             <div style="width: 100%; aspect-ratio: 1/1; background: #f8fafc; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; margin-bottom: 8px;">
-                                <img id="flowImgSlot1" src="" alt="Slot 1" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.open(this.src)">
+                                <img id="flowImgSlot1" src="" alt="Slot 1" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" onclick="window.open(this.src)">
                             </div>
                             <div style="font-size: 0.72rem; font-family: monospace; color: #64748b; margin-bottom: 6px; word-break: break-all;" id="flowFileSlot1">-</div>
                             <div style="background: #0f172a; color: #94a3b8; padding: 8px; border-radius: 6px; font-size: 0.7rem; line-height: 1.35; flex: 1; max-height: 90px; overflow-y: auto; margin-bottom: 8px;" id="flowPromptSlot1">
@@ -1778,7 +1817,7 @@
                                 <span style="font-size: 0.7rem; color: #0284c7; font-weight: 700;" id="flowBadgeSlot2">✅ Ready</span>
                             </div>
                             <div style="width: 100%; aspect-ratio: 1/1; background: #f8fafc; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; margin-bottom: 8px;">
-                                <img id="flowImgSlot2" src="" alt="Slot 2" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.open(this.src)">
+                                <img id="flowImgSlot2" src="" alt="Slot 2" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" onclick="window.open(this.src)">
                             </div>
                             <div style="font-size: 0.72rem; font-family: monospace; color: #64748b; margin-bottom: 6px; word-break: break-all;" id="flowFileSlot2">-</div>
                             <div style="background: #0f172a; color: #94a3b8; padding: 8px; border-radius: 6px; font-size: 0.7rem; line-height: 1.35; flex: 1; max-height: 90px; overflow-y: auto; margin-bottom: 8px;" id="flowPromptSlot2">
@@ -1796,7 +1835,7 @@
                                 <span style="font-size: 0.7rem; color: #d97706; font-weight: 700;" id="flowBadgeSlot3">✅ Ready</span>
                             </div>
                             <div style="width: 100%; aspect-ratio: 1/1; background: #f8fafc; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; margin-bottom: 8px;">
-                                <img id="flowImgSlot3" src="" alt="Slot 3" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.open(this.src)">
+                                <img id="flowImgSlot3" src="" alt="Slot 3" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" onclick="window.open(this.src)">
                             </div>
                             <div style="font-size: 0.72rem; font-family: monospace; color: #64748b; margin-bottom: 6px; word-break: break-all;" id="flowFileSlot3">-</div>
                             <div style="background: #0f172a; color: #94a3b8; padding: 8px; border-radius: 6px; font-size: 0.7rem; line-height: 1.35; flex: 1; max-height: 90px; overflow-y: auto; margin-bottom: 8px;" id="flowPromptSlot3">
@@ -1814,7 +1853,7 @@
                                 <span style="font-size: 0.7rem; color: #7c3aed; font-weight: 700;" id="flowBadgeSlot4">✅ Ready</span>
                             </div>
                             <div style="width: 100%; aspect-ratio: 1/1; background: #f8fafc; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid #f1f5f9; margin-bottom: 8px;">
-                                <img id="flowImgSlot4" src="" alt="Slot 4" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onclick="window.open(this.src)">
+                                <img id="flowImgSlot4" src="" alt="Slot 4" style="width: 100%; height: 100%; object-fit: contain; cursor: pointer;" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" onclick="window.open(this.src)">
                             </div>
                             <div style="font-size: 0.72rem; font-family: monospace; color: #64748b; margin-bottom: 6px; word-break: break-all;" id="flowFileSlot4">-</div>
                             <div style="background: #0f172a; color: #94a3b8; padding: 8px; border-radius: 6px; font-size: 0.7rem; line-height: 1.35; flex: 1; max-height: 90px; overflow-y: auto; margin-bottom: 8px;" id="flowPromptSlot4">
@@ -2731,6 +2770,14 @@
 
             const gBox = document.getElementById('googleApiKeyBox');
             if (gBox) gBox.style.display = engine === 'google_ai_studio' ? 'block' : 'none';
+
+            const lOAI = document.getElementById('labelEngineOpenAI');
+            if (lOAI) {
+                lOAI.style.borderColor = engine === 'openai_dalle' ? '#10b981' : '#cbd5e1';
+                lOAI.style.background = engine === 'openai_dalle' ? '#ecfdf5' : '#f8fafc';
+            }
+            const oaiBox = document.getElementById('openaiKeyBox');
+            if (oaiBox) oaiBox.style.display = engine === 'openai_dalle' ? 'block' : 'none';
         }
 
         function switchPrKey(mode) {
@@ -4130,25 +4177,35 @@
         }
 
         function showToast(msg) {
-            let t = document.getElementById('toastBox');
-            let m = document.getElementById('toastMsg');
-            if (!t) {
-                t = document.createElement('div');
-                t.id = 'toastBox';
-                t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0f172a;color:#ffffff;padding:12px 20px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:999999;display:flex;align-items:center;gap:10px;font-size:0.85rem;font-weight:700;border:1px solid #334155;transition:opacity 0.3s ease;';
-                m = document.createElement('span');
-                m.id = 'toastMsg';
-                t.appendChild(m);
-                document.body.appendChild(t);
+            try {
+                let t = document.getElementById('toastBox');
+                if (!t) {
+                    t = document.createElement('div');
+                    t.id = 'toastBox';
+                    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0f172a;color:#ffffff;padding:12px 20px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:999999;display:flex;align-items:center;gap:10px;font-size:0.85rem;font-weight:700;border:1px solid #334155;transition:opacity 0.3s ease;';
+                    document.body.appendChild(t);
+                }
+                let m = document.getElementById('toastMsg');
+                if (!m && t) {
+                    m = document.createElement('span');
+                    m.id = 'toastMsg';
+                    t.appendChild(m);
+                }
+                if (m) m.innerText = String(msg || '');
+                if (t) {
+                    t.style.display = 'flex';
+                    t.style.opacity = '1';
+                }
+                clearTimeout(window.__toastTimeout);
+                window.__toastTimeout = setTimeout(() => {
+                    if (t) {
+                        t.style.opacity = '0';
+                        setTimeout(() => { if (t) t.style.display = 'none'; }, 300);
+                    }
+                }, 4000);
+            } catch (err) {
+                console.log('Toast notification:', msg);
             }
-            if (m) m.innerText = msg;
-            t.style.display = 'flex';
-            t.style.opacity = '1';
-            clearTimeout(window.__toastTimeout);
-            window.__toastTimeout = setTimeout(() => {
-                t.style.opacity = '0';
-                setTimeout(() => { if (t) t.style.display = 'none'; }, 300);
-            }, 4000);
         }
 
         // ==========================================
@@ -5112,19 +5169,19 @@
                         </h5>
                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 8px;">
                             <div style="text-align: center;">
-                                <img src="${heroSrc}" onerror="this.src='/shopee-assets/${encodeURIComponent(p.folder_name)}/hero_${encodeURIComponent(p.folder_name)}.webp'" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <img src="${heroSrc}" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
                                 <span style="font-size: 0.62rem; color: ${p.status.hero_exists ? '#059669' : '#94a3b8'}; font-weight: 700;">Hero</span>
                             </div>
                             <div style="text-align: center;">
-                                <img src="${sideSrc}" onerror="this.src='/shopee-assets/${encodeURIComponent(p.folder_name)}/side_${encodeURIComponent(p.folder_name)}.webp'" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <img src="${sideSrc}" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
                                 <span style="font-size: 0.62rem; color: ${p.status.side_exists ? '#0284c7' : '#94a3b8'}; font-weight: 700;">Side</span>
                             </div>
                             <div style="text-align: center;">
-                                <img src="${treadSrc}" onerror="this.src='/shopee-assets/${encodeURIComponent(p.folder_name)}/tread_${encodeURIComponent(p.folder_name)}.webp'" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <img src="${treadSrc}" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
                                 <span style="font-size: 0.62rem; color: ${p.status.tread_exists ? '#d97706' : '#94a3b8'}; font-weight: 700;">Tread</span>
                             </div>
                             <div style="text-align: center;">
-                                <img src="${usageSrc}" onerror="this.src='/shopee-assets/${encodeURIComponent(p.folder_name)}/usage_${encodeURIComponent(p.folder_name)}.webp'" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <img src="${usageSrc}" onerror="this.onerror=null; this.src='/assets/placeholder_boot.webp';" style="width: 100%; aspect-ratio: 1; object-fit: contain; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px;">
                                 <span style="font-size: 0.62rem; color: ${p.status.usage_exists ? '#7c3aed' : '#94a3b8'}; font-weight: 700;">Usage</span>
                             </div>
                         </div>
@@ -5540,6 +5597,9 @@
             } else if (selectedEngine === 'google_ai_studio') {
                 const gKeyInput = document.getElementById('inputGoogleApiKey');
                 apiKeyToUse = gKeyInput ? gKeyInput.value.trim() : '';
+            } else if (selectedEngine === 'openai_dalle') {
+                const oaiInput = document.getElementById('inputOpenAiKey');
+                apiKeyToUse = oaiInput ? oaiInput.value.trim() : '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';
             }
             const ngrokUrlInput = document.getElementById('inputColabNgrokUrl');
             const ngrokUrl = ngrokUrlInput ? ngrokUrlInput.value.trim() : '';

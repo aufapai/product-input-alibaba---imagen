@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "HOTS Trading — Alibaba Auto-Fill, Photobank & Google Flow Bridge",
+  "version": "1.0.0",
+  "description": "Menghubungkan Local Bridge (localhost:8888) ke Google Flow (aufahots@gmail.com), Alibaba Photobank, dan Alibaba Product List/Post.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "tabGroups",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "http://localhost:8888/*",
+    "http://127.0.0.1:8888/*",
+    "https://*.alibaba.com/*",
+    "https://flow.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "HOTS Alibaba & Flow Bridge"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://flow.google.com/*",
+        "https://photobank.alibaba.com/*",
+        "https://i.alibaba.com/*",
+        "https://post.alibaba.com/*"
+      ],
+      "js": [
+        "content_overlay.js"
+      ],
+      "css": [
+        "content_overlay.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -46,9 +46,14 @@ from shopee_asset_manager import (
 from photobank_api_bridge import (
     get_photobank_summary, generate_sample_4_variations,
     generate_product_variations_custom, batch_generate_products_custom,
-    upload_sku_slots_to_photobank_admin, PHOTOBANK_DIR,
+    upload_sku_slots_to_photobank_admin, save_uploaded_photobank_slot, PHOTOBANK_DIR,
     FLOW_PROJECT_ID, FLOW_PROJECT_URL, FLOW_ACCOUNT_EMAIL,
     get_flow_10_bundle, create_flow_batch_zip
+)
+from api_docs import get_api_docs_html, get_openapi_spec
+from extension_bridge import (
+    get_ext_health, get_ext_categories, get_ext_queue, get_ext_product,
+    get_ext_flow_jobs, update_ext_status, sync_alibaba_list, handle_flow_downloaded
 )
 
 
@@ -68,6 +73,13 @@ EXPORT_PATH_OUT = os.path.join(BASE_DIR, "Output", "Alibaba_Bulk_Upload_Tokopedi
 EXPORT_PATH_40 = os.path.join(BASE_DIR, "Output", "Alibaba_Bulk_Upload_October_2026_40_Products.xlsx")
 HTML_TEMPLATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "template.html")
 PORT = 8888
+
+# Asset Directories for Local Offline Access
+SHOPEE_DIR = os.path.join(BASE_DIR, "Shopee_Product_Assets")
+TOKOPEDIA_DIR = os.path.join(BASE_DIR, "Images_Tokopedia")
+PHOTOBANK_DIR = os.path.join(BASE_DIR, "Output", "Photobank_Siap_Upload")
+KATALOG_DIR = os.path.join(BASE_DIR, "Images_Produk_Katalog")
+FINAL_DIR = os.path.join(BASE_DIR, "FINAL")
 
 def export_flagship_40_excel():
     f40 = get_flagship_40_list()
@@ -491,6 +503,112 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(get_html_page().encode("utf-8"))
             return
 
+        elif path == "/api" or path == "/api/docs":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(get_api_docs_html().encode("utf-8"))
+            return
+
+        elif path == "/api/openapi.json":
+            self.send_json(get_openapi_spec())
+            return
+
+        elif path in ["/final", "/master-final", "/final/index.html"]:
+            final_html_path = os.path.join(BASE_DIR, "FINAL", "index.html")
+            if os.path.exists(final_html_path):
+                with open(final_html_path, "rb") as f:
+                    content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path == "/master_products_catalog.json":
+            fpath = os.path.join(BASE_DIR, "FINAL", "master_products_catalog.json")
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path == "/master_products_catalog.xlsx":
+            fpath = os.path.join(BASE_DIR, "FINAL", "master_products_catalog.xlsx")
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                self.send_header("Content-Disposition", 'attachment; filename="master_products_catalog.xlsx"')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path == "/master_products_catalog.csv":
+            fpath = os.path.join(BASE_DIR, "FINAL", "master_products_catalog.csv")
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/csv; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="master_products_catalog.csv"')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path in ["/master_products_database.sql", "/api/master/sql"]:
+            fpath = os.path.join(BASE_DIR, "FINAL", "master_products_database.sql")
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/sql; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="master_products_database.sql"')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path in ["/inject_catalog_hotstrading.sql", "/api/catalog/sql", "/api/hotstrading/sql"]:
+            fpath = os.path.join(BASE_DIR, "FINAL", "inject_catalog_hotstrading.sql")
+            if not os.path.exists(fpath):
+                fpath = os.path.join(BASE_DIR, "Database", "inject_catalog_hotstrading.sql")
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/sql; charset=utf-8")
+                self.send_header("Content-Disposition", 'attachment; filename="inject_catalog_hotstrading.sql"')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path in ["/master_products_complete_detailed.xlsx", "/master_products_complete_detailed.xlsm", "/master_products_complete_detailed.csv"]:
+            fname = os.path.basename(path)
+            fpath = os.path.join(BASE_DIR, "FINAL", fname)
+            if os.path.exists(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                ctype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                if fname.endswith(".xlsm"): ctype = "application/vnd.ms-excel.sheet.macroEnabled.12"
+                elif fname.endswith(".csv"): ctype = "text/csv; charset=utf-8"
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.send_header("Content-Disposition", f'attachment; filename="{fname}"')
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
+        elif path.startswith("/graphify-out/"):
+            rel = path[len("/graphify-out/"):]
+            fpath = os.path.join(BASE_DIR, "FINAL", "graphify-out", rel)
+            if os.path.exists(fpath) and os.path.isfile(fpath):
+                with open(fpath, "rb") as f: content = f.read()
+                ctype = "text/html; charset=utf-8" if fpath.endswith(".html") else "application/json"
+                self.send_response(200)
+                self.send_header("Content-Type", ctype)
+                self.end_headers()
+                self.wfile.write(content)
+                return
+
         elif path == "/api/stats":
             conn = get_db()
             cur = conn.cursor()
@@ -725,35 +843,37 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404, "File not found")
                 return
 
-        elif path.startswith("/shopee-assets/"):
-            try:
-                subpath = urllib.parse.unquote(path[len("/shopee-assets/"):])
-                norm_path = os.path.normpath(os.path.join(ASSETS_DIR, subpath))
-                if norm_path.startswith(ASSETS_DIR) and os.path.exists(norm_path) and os.path.isfile(norm_path):
-                    self.send_response(200)
-                    if norm_path.lower().endswith(".webp"):
-                        self.send_header("Content-Type", "image/webp")
-                    elif norm_path.lower().endswith(".json"):
-                        self.send_header("Content-Type", "application/json; charset=utf-8")
-                    elif norm_path.lower().endswith(".png"):
-                        self.send_header("Content-Type", "image/png")
-                    elif norm_path.lower().endswith(".jpg") or norm_path.lower().endswith(".jpeg"):
-                        self.send_header("Content-Type", "image/jpeg")
-                    else:
-                        self.send_header("Content-Type", "application/octet-stream")
-                    with open(norm_path, "rb") as f:
-                        content = f.read()
-                    self.send_header("Content-Length", str(len(content)))
-                    self.send_header("Cache-Control", "no-cache")
-                    self.end_headers()
-                    self.wfile.write(content)
-                    return
-                else:
-                    self.send_error(404, "Asset not found")
-                    return
-            except Exception as e:
-                self.send_error(500, f"Error serving asset: {e}")
-                return
+        # Multi-Marketplace & Photobank Static Assets Routing (Offline-Ready)
+        elif path.startswith("/assets/shopee/") or path.startswith("/shopee-assets/"):
+            prefix = "/assets/shopee/" if path.startswith("/assets/shopee/") else "/shopee-assets/"
+            subpath = urllib.parse.unquote(path[len(prefix):])
+            norm_path = os.path.normpath(os.path.join(SHOPEE_DIR, subpath.replace('/', os.sep)))
+            return self.serve_direct_file(norm_path)
+
+        elif path.startswith("/assets/tokopedia/") or path.startswith("/tokopedia-assets/"):
+            prefix = "/assets/tokopedia/" if path.startswith("/assets/tokopedia/") else "/tokopedia-assets/"
+            subpath = urllib.parse.unquote(path[len(prefix):])
+            norm_path = os.path.normpath(os.path.join(TOKOPEDIA_DIR, subpath.replace('/', os.sep)))
+            return self.serve_direct_file(norm_path)
+
+        elif path.startswith("/assets/photobank/"):
+            subpath = urllib.parse.unquote(path[len("/assets/photobank/"):])
+            norm_path = os.path.normpath(os.path.join(PHOTOBANK_DIR, subpath.replace('/', os.sep)))
+            return self.serve_direct_file(norm_path)
+
+        elif path.startswith("/assets/flow-generated/"):
+            subpath = urllib.parse.unquote(path[len("/assets/flow-generated/"):])
+            flow_gen_dir = os.path.join(os.path.dirname(PHOTOBANK_DIR), "Flow_Generated")
+            norm_path = os.path.normpath(os.path.join(flow_gen_dir, subpath.replace('/', os.sep)))
+            return self.serve_direct_file(norm_path)
+
+        elif path.startswith("/assets/katalog/"):
+            subpath = urllib.parse.unquote(path[len("/assets/katalog/"):])
+            norm_path = os.path.normpath(os.path.join(KATALOG_DIR, subpath.replace('/', os.sep)))
+            return self.serve_direct_file(norm_path)
+
+        elif path in ["/assets/placeholder_boot.webp", "/assets/placeholder_boot.png"]:
+            return self.serve_svg_placeholder()
 
         elif path == "/api/shopee/products":
             try:
@@ -856,14 +976,78 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_json({"success": False, "error": str(e)}, status=500)
             return
 
+        elif path == "/api/ext/health":
+            try:
+                self.send_json(get_ext_health())
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path == "/api/ext/categories":
+            try:
+                self.send_json(get_ext_categories())
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path == "/api/ext/queue":
+            try:
+                qp = urllib.parse.parse_qs(parsed.query)
+                status_f = qp.get("status", [""])[0]
+                q_f = qp.get("q", [""])[0]
+                cat_f = qp.get("category", [""])[0]
+                limit_f = int(qp.get("limit", ["125"])[0])
+                self.send_json(get_ext_queue(status_filter=status_f, search_q=q_f, category_filter=cat_f, limit=limit_f))
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path.startswith("/api/ext/product/"):
+            try:
+                sku = urllib.parse.unquote(path[len("/api/ext/product/"):]).strip("/")
+                res = get_ext_product(sku)
+                if res:
+                    self.send_json(res)
+                else:
+                    self.send_json({"success": False, "error": f"SKU {sku} not found"}, status=404)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path.startswith("/api/ext/flow-jobs/"):
+            try:
+                sku = urllib.parse.unquote(path[len("/api/ext/flow-jobs/"):]).strip("/")
+                res = get_ext_flow_jobs(sku)
+                if res:
+                    self.send_json(res)
+                else:
+                    self.send_json({"success": False, "error": f"SKU {sku} not found"}, status=404)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
         self.send_error(404, "Endpoint not found")
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
         length = int(self.headers.get('Content-Length', 0))
-        body = self.rfile.read(length).decode('utf-8') if length > 0 else "{}"
-        data = json.loads(body) if body else {}
+        raw_body = self.rfile.read(length) if length > 0 else b""
+        c_type = self.headers.get('Content-Type', '')
+        data = {}
+        if 'application/json' in c_type or not c_type:
+            try:
+                data = json.loads(raw_body.decode('utf-8')) if raw_body else {}
+            except Exception:
+                try:
+                    data = json.loads(raw_body.decode('utf-8', errors='ignore')) if raw_body else {}
+                except Exception:
+                    data = {}
+        else:
+            try:
+                data = json.loads(raw_body.decode('utf-8', errors='ignore')) if raw_body else {}
+            except Exception:
+                data = {}
 
         if path == "/api/sync_all":
             try:
@@ -1478,6 +1662,62 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_json({"success": False, "error": str(e)}, status=500)
             return
 
+        elif path == "/api/photobank/upload":
+            try:
+                sku = data.get("sku", "SHP-001")
+                folder = data.get("folder") or data.get("folder_name", "AP_Boots_XTR_Hitam_Sepatu_Boot_PVC")
+                slot = data.get("slot", "slot_1_hero")
+                category = data.get("category", None)
+                p_name = data.get("product_name", None)
+                b64 = data.get("image_base64") or data.get("image_data") or ""
+
+                file_bytes = None
+                if b64:
+                    if ',' in b64:
+                        b64 = b64.split(',', 1)[1]
+                    file_bytes = base64.b64decode(b64)
+                elif 'multipart/form-data' in c_type:
+                    boundary = None
+                    for part in c_type.split(';'):
+                        if 'boundary=' in part:
+                            boundary = part.split('boundary=')[1].strip().encode('utf-8')
+                            break
+                    if boundary:
+                        parts = raw_body.split(b'--' + boundary)
+                        fields = {}
+                        for p in parts:
+                            if b'Content-Disposition:' in p:
+                                head, body_bytes = p.split(b'\r\n\r\n', 1)
+                                body_bytes = body_bytes.rstrip(b'\r\n')
+                                disp = head.decode('utf-8', errors='ignore')
+                                if 'filename=' in disp:
+                                    file_bytes = body_bytes
+                                else:
+                                    name_match = re.search(r'name="([^"]+)"', disp)
+                                    if name_match:
+                                        fields[name_match.group(1)] = body_bytes.decode('utf-8', errors='ignore')
+                        sku = fields.get("sku", sku)
+                        folder = fields.get("folder") or fields.get("folder_name", folder)
+                        slot = fields.get("slot", slot)
+                        category = fields.get("category", category)
+                        p_name = fields.get("product_name", p_name)
+
+                if file_bytes:
+                    res = save_uploaded_photobank_slot(
+                        sku=sku,
+                        folder_name=folder,
+                        slot=slot,
+                        img_bytes=file_bytes,
+                        product_name=p_name,
+                        category=category
+                    )
+                    self.send_json(res)
+                else:
+                    self.send_json({"success": False, "error": "No image data or file found in payload"}, status=400)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
         elif path == "/api/photobank/custom-generate":
             try:
                 sku = data.get("sku", "SHP-001")
@@ -1540,6 +1780,38 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_json({"success": False, "error": str(e)}, status=500)
             return
 
+        elif path == "/api/ext/status":
+            try:
+                sku = data.get("sku", "")
+                status_val = data.get("status", "APPROVED")
+                ali_id = data.get("alibaba_product_id", "")
+                res = update_ext_status(sku, status_val, ali_id)
+                self.send_json(res, status=200 if res.get("success") else 404)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path == "/api/ext/sync-alibaba-list":
+            try:
+                items = data.get("items", [])
+                res = sync_alibaba_list(items)
+                self.send_json(res)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
+        elif path == "/api/ext/flow-downloaded":
+            try:
+                sku = data.get("sku", "MST-001")
+                dl_path = data.get("download_path", "")
+                slot_idx = int(data.get("slot_index", 1))
+                resolution = data.get("resolution", "2K")
+                res = handle_flow_downloaded(sku, dl_path, slot_idx, resolution)
+                self.send_json(res)
+            except Exception as e:
+                self.send_json({"success": False, "error": str(e)}, status=500)
+            return
+
         self.send_error(404, "Endpoint not found")
 
     def send_json(self, data, status=200):
@@ -1552,6 +1824,47 @@ class AlibabaManagerHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def serve_direct_file(self, file_path):
+        if not file_path or not os.path.exists(file_path) or not os.path.isfile(file_path):
+            return self.serve_svg_placeholder()
+        ext = os.path.splitext(file_path)[1].lower()
+        ctype = "application/octet-stream"
+        if ext == ".webp": ctype = "image/webp"
+        elif ext in [".jpg", ".jpeg"]: ctype = "image/jpeg"
+        elif ext == ".png": ctype = "image/png"
+        elif ext == ".json": ctype = "application/json; charset=utf-8"
+        elif ext == ".sql": ctype = "application/sql; charset=utf-8"
+        elif ext == ".csv": ctype = "text/csv; charset=utf-8"
+        elif ext == ".xlsx": ctype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        try:
+            with open(file_path, "rb") as f:
+                content = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Content-Length", str(len(content)))
+            self.send_header("Cache-Control", "public, max-age=86400")
+            self.end_headers()
+            self.wfile.write(content)
+        except Exception:
+            self.serve_svg_placeholder()
+
+    def serve_svg_placeholder(self):
+        svg = """<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+            <rect width="600" height="600" fill="#0f172a"/>
+            <circle cx="300" cy="270" r="100" fill="#1e293b" stroke="#334155" stroke-width="4"/>
+            <text x="300" y="295" font-family="Arial, sans-serif" font-size="80" text-anchor="middle" fill="#94a3b8">🥾</text>
+            <text x="300" y="420" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#f8fafc">AP BOOTS &amp; PETROVA</text>
+            <text x="300" y="450" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b">Visual Reference Master</text>
+        </svg>"""
+        b = svg.encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'image/svg+xml')
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header('Content-Length', str(len(b)))
+        self.end_headers()
+        self.wfile.write(b)
 
 def run_server():
     socketserver.TCPServer.allow_reuse_address = True

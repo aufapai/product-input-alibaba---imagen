@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>HOTS Alibaba & Flow Bridge</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { width: 390px; margin: 0; padding: 14px; background: #0f172a; color: #f8fafc; }
+    .hdr { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 10px; }
+    .title { font-size: 14px; font-weight: 800; color: #38bdf8; }
+    .sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: #1e293b; border: 1px solid #334155; }
+    .badge.ok { color: #34d399; border-color: #059669; background: rgba(5, 150, 105, 0.15); }
+    .badge.err { color: #f87171; border-color: #dc2626; background: rgba(220, 38, 38, 0.15); }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+    label { display: block; font-size: 11px; font-weight: 700; color: #cbd5e1; margin-bottom: 5px; }
+    input[type="text"], select { width: 100%; padding: 7px 8px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #f8fafc; font-size: 12px; margin-bottom: 6px; }
+    .chk-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 11px; color: #cbd5e1; cursor: pointer; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; font-size: 11px; }
+    .meta-box { background: #0f172a; border: 1px solid #334155; border-radius: 6px; padding: 6px; }
+    .meta-lbl { color: #94a3b8; font-size: 10px; }
+    .meta-val { color: #f8fafc; font-weight: 700; margin-top: 2px; }
+    .lock-val { color: #60a5fa; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    button { cursor: pointer; border: none; border-radius: 6px; padding: 8px 10px; font-size: 11px; font-weight: 700; color: #fff; background: #2563eb; transition: opacity 0.15s; }
+    button:hover { opacity: 0.9; }
+    button.full { grid-column: span 2; background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    button.flow { background: #7c3aed; }
+    button.pb { background: #059669; }
+    button.list { background: #d97706; }
+    button.danger { background: #dc2626; }
+    button.scan { background: #0f766e; }
+    button.sec { background: #334155; }
+    #popupLog { font-size: 10.5px; color: #94a3b8; margin-top: 6px; min-height: 16px; }
+  </style>
+</head>
+<body>
+  <div class="hdr">
+    <div>
+      <div class="title">HOTS Alibaba + Flow Bridge</div>
+      <div class="sub">Profil: <strong>aufahots@gmail.com</strong> • Grup: <strong>HOTS Flow</strong></div>
+    </div>
+    <span id="connBadge" class="badge">Checking...</span>
+  </div>
+
+  <div class="card">
+    <label for="catSelect">Filter Kategori & Pilih SKU (<span id="matchCount">0</span> SKU)</label>
+    <select id="catSelect">
+      <option value="">📁 Semua Kategori Folder (125 SKU)</option>
+    </select>
+    <input type="text" id="skuSearch" placeholder="🔍 Ketik SKU atau nama produk (cth: terra, max, kids)..." />
+    <select id="skuSelect">
+      <option value="MST-001">Memuat antrean dari localhost:8888...</option>
+    </select>
+    <label class="chk-row">
+      <input type="checkbox" id="chkAutoRun" />
+      <span>⚡ Otomatis Auto-Run saat memilih produk</span>
+    </label>
+    <div class="meta-grid">
+      <div class="meta-box">
+        <div class="meta-lbl">Photobank Group</div>
+        <div id="valGroup" class="meta-val">-</div>
+      </div>
+      <div class="meta-box">
+        <div class="meta-lbl">MOQ & Harga (Locked)</div>
+        <div id="valPrice" class="meta-val lock-val">-</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Kelola Grup Tab (1 Grup • Mudah Ditutup Semua)</label>
+    <div class="btn-grid">
+      <button id="btnOpenGroup" class="pb">🚀 Buka Grup Kerja</button>
+      <button id="btnCloseGroup" class="danger">🗑️ Tutup Grup Tab</button>
+      <button id="btnRunFlowDirect" class="full flow">🎨 Run Google Flow (Agent 2K) dari Extension</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Aksi Otomatis di Tab Aktif</label>
+    <div class="btn-grid">
+      <button id="btnRunActiveTab" class="full">⚡ Auto-Run Produk Ini di Tab Aktif</button>
+      <button id="btnSyncList" class="list">🔄 Sinkronisasi Produk</button>
+      <button id="btnScanButtons" class="scan">🔍 Cari Tombol</button>
+      <button class="sec" data-target="publish">➕ publish-plan</button>
+      <button class="sec" data-target="photobank">📸 Photobank</button>
+    </div>
+    <div id="popupLog">Siap. Klik 'Run Google Flow' atau 'Buka Grup Kerja'.</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

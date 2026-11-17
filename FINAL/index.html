@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP BOOTS® & PETROVA — UNIFIED MASTER PRODUCT CATALOG (FINAL)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --accent: #f59e0b;
+            --bg-base: #090d16;
+            --bg-card: #0f172a;
+            --bg-surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --border-light: #475569;
+            --shp-color: #ee4d2d;
+            --tok-color: #03ac0e;
+            --bli-color: #0095da;
+            --lzd-color: #0f146d;
+            --pb-color: #8b5cf6;
+            --ai-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.5;
+            padding-bottom: 80px;
+        }
+
+        /* Top Sticky Navbar */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo-sq {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .brand-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #fff;
+        }
+
+        .brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-excel {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-excel:hover {
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-json {
+            background: var(--bg-surface);
+            color: #e2e8f0;
+            border-color: var(--border-light);
+        }
+        .btn-json:hover {
+            background: #334155;
+        }
+
+        .btn-csv {
+            background: #0284c7;
+            color: #fff;
+        }
+        .btn-csv:hover {
+            background: #0369a1;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Hero Header */
+        .hero-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            border: 1px solid #3730a3;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .hero-h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .hero-desc {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        .hero-badges-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .badge-verified {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            color: #34d399;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-source-count {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid #6366f1;
+            color: #a5b4fc;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .stat-num {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            color: #fff;
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Controls & Filter Bar */
+        .control-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrap {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 14px 10px 38px;
+            color: #fff;
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .filter-select {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            min-width: 170px;
+        }
+
+        .filter-select option {
+            background: var(--bg-card);
+            color: #fff;
+        }
+
+        .filter-pills-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pill-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .pill-btn:hover, .pill-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .pill-btn.pill-shp.active { background: var(--shp-color); border-color: var(--shp-color); }
+        .pill-btn.pill-tok.active { background: var(--tok-color); border-color: var(--tok-color); }
+        .pill-btn.pill-pb.active { background: var(--pb-color); border-color: var(--pb-color); }
+        .pill-btn.pill-bli.active { background: var(--bli-color); border-color: var(--bli-color); }
+        .pill-btn.pill-lzd.active { background: var(--lzd-color); border-color: var(--lzd-color); }
+
+        .view-switcher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg-surface);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            margin-left: auto;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            border-color: #60a5fa;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header-bar {
+            padding: 12px 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .sku-badge-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-master-sku {
+            background: #0284c7;
+            color: #fff;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: monospace;
+        }
+
+        .badge-orig-sku {
+            background: rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .badge-brand {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .brand-ap {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .brand-petrova {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .card-img-wrap {
+            width: 100%;
+            height: 240px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .card-img-wrap img {
+            transform: scale(1.04);
+        }
+
+        .source-flag-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 12px;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .category-text {
+            font-size: 0.72rem;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .specs-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 0.7rem;
+        }
+
+        .chip-spec {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 2px 7px;
+            border-radius: 4px;
+            color: #cbd5e1;
+        }
+
+        /* Price Matrix Box in Card */
+        .price-matrix-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .price-item-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-col-lbl {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .price-col-val {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #34d399;
+        }
+
+        .price-col-val.usd {
+            color: #fbbf24;
+        }
+
+        /* Source Coverage Indicators */
+        .source-dots-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .dot-badge {
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+        }
+        .dot-shp { background: var(--shp-color); }
+        .dot-tok { background: var(--tok-color); }
+        .dot-bli { background: var(--bli-color); }
+        .dot-lzd { background: var(--lzd-color); }
+        .dot-pb { background: var(--pb-color); }
+
+        .card-actions {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-gallery {
+            flex: 1;
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-gallery:hover {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Table View */
+        .table-view-wrap {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow-x: auto;
+        }
+
+        .master-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+
+        .master-table th {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 12px 14px;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .master-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            color: #cbd5e1;
+            vertical-align: middle;
+        }
+
+        .master-table tr:hover td {
+            background: rgba(30, 41, 59, 0.4);
+        }
+
+        .tbl-thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            background: #000;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* Modal Galeri Multi-Sumber */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1100px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 18px 24px;
+            background: #1e293b;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .modal-title-wrap h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .modal-title-wrap p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-close-modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            background: #ef4444;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .gallery-card {
+            background: #0b1120;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .gallery-img-box {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .gallery-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .gallery-card-info {
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .gallery-flag-badge {
+            align-self: flex-start;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .gallery-img-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-top: 2px;
+        }
+
+        .gallery-img-type {
+            font-size: 0.68rem;
+            color: #94a3b8;
+        }
+
+        .gallery-card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: auto;
+            padding-top: 8px;
+        }
+
+        .btn-copy-url, .btn-open-img {
+            flex: 1;
+            padding: 5px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: #cbd5e1;
+            transition: all 0.15s;
+        }
+
+        .btn-copy-url:hover, .btn-open-img:hover {
+            background: #334155;
+            color: #fff;
+        }
+
+        /* Toast */
+        #finalToast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--primary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-h1 { font-size: 1.3rem; }
+            .products-grid { grid-template-columns: 1fr; }
+            .top-navbar { flex-direction: column; align-items: flex-start; }
+            .nav-actions { width: 100%; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header class="top-navbar">
+        <div class="brand-badge">
+            <div class="brand-logo-sq">AP</div>
+            <div>
+                <div class="brand-title">AP BOOTS® & PETROVA MASTER CATALOG</div>
+                <div class="brand-sub">HOTS Trading • Single Source of Truth • 0 Duplicate Standard</div>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/inject_catalog_hotstrading.sql" download="inject_catalog_hotstrading.sql" class="btn-action" style="background: linear-gradient(135deg, #059669, #047857); color: #fff; font-weight: 800; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);" title="Unduh Skrip SQL Produksi Khusus untuk Website catalog.hotstrading.com (MariaDB hotj4796_hotstrading)">
+                <span>⚡</span> SQL Live Catalog (.sql)
+            </a>
+            <a href="/master_products_database.sql" download="master_products_database.sql" class="btn-action" style="background: #4338ca; color: #fff;" title="Unduh Database SQL Dump Lengkap (MySQL / MariaDB / PostgreSQL / SQLite)">
+                <span>💾</span> SQL Dump (.sql)
+            </a>
+            <a href="/master_products_complete_detailed.xlsx" download="master_products_complete_detailed.xlsx" class="btn-action btn-excel" title="Unduh Master Excel Lengkap 4-Sheet dengan Deskripsi & Spesifikasi">
+                <span>📊</span> Master Excel (.xlsx)
+            </a>
+            <a href="/master_products_complete_detailed.xlsm" download="master_products_complete_detailed.xlsm" class="btn-action" style="background: #0d9488; color: #fff;" title="Unduh Format Macro Spreadsheet (.xlsm)">
+                <span>📑</span> Macro Excel (.xlsm)
+            </a>
+            <a href="/master_products_complete_detailed.csv" download="master_products_complete_detailed.csv" class="btn-action btn-csv" title="Unduh Flat CSV Universal">
+                <span>📄</span> CSV
+            </a>
+            <a href="/graphify-out/graph.html" target="_blank" class="btn-action" style="background: #7c3aed; color: #fff;" title="Buka Visualisasi Knowledge Graph & Klaster Komunitas">
+                <span>🕸️</span> Graphify ↗
+            </a>
+            <button onclick="triggerResync()" class="btn-action btn-json" title="Sync ulang database">
+                <span>🔄</span> Re-Sync
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Hero Banner -->
+        <section class="hero-banner">
+            <div class="hero-title-row">
+                <div>
+                    <h1 class="hero-h1">AP BOOTS® & PETROVA — UNIFIED MASTER PRODUCT CATALOG</h1>
+                    <p class="hero-desc">
+                        Database master tunggal terpadu bebas duplikasi (0 Duplikat) yang mengkonsolidasikan seluruh lini produk resmi AP Boots Indonesia dan Petrova Heavy Duty Safety. Dilengkapi matriks komparasi harga multi-marketplace serta <strong>Registri Galeri Foto Multi-Sumber Berlabel (Source Flag)</strong> sebagai referensi visual visualisasi B2B ekspor.
+                    </p>
+                    <div class="hero-badges-row">
+                        <span class="badge-verified">✓ 100% Zero Duplicates Verified</span>
+                        <span class="badge-source-count">🏷️ Foto Offline: [SHOPEE LOKAL] [TOKOPEDIA LOKAL (468 Foto 1600x1600)] [PHOTOBANK B2B]</span>
+                        <span class="badge-source-count" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">🌐 Live Inject: catalog.hotstrading.com (MariaDB hotj4796_hotstrading)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(2, 132, 199, 0.15); color: #38bdf8;">🥾</div>
+                <div>
+                    <div class="stat-num" id="statTotalSkus">125</div>
+                    <div class="stat-label">Total Master SKU (0 Duplikat)</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">🖼️</div>
+                <div>
+                    <div class="stat-num" id="statTotalImages">1,199</div>
+                    <div class="stat-label">Foto Multi-Sumber Berlabel Flag</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🏢</div>
+                <div>
+                    <div class="stat-num">11 Kategori</div>
+                    <div class="stat-label">Safety, Terra, Classic, Medic, dll.</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🌐</div>
+                <div>
+                    <div class="stat-num">100% Siap B2B</div>
+                    <div class="stat-label">Alibaba PIS Ready & PaDi UMKM</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Control Toolbar -->
+        <section class="control-bar">
+            <div class="search-row">
+                <div class="search-box-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari SKU, Nama Produk, Warna, Material, Fitur Safety..." oninput="onFilterChange()">
+                </div>
+                <select id="categoryFilter" class="filter-select" onchange="onFilterChange()">
+                    <option value="ALL">Semua Kategori (11)</option>
+                </select>
+                <select id="brandFilter" class="filter-select" onchange="onFilterChange()">
+                    <option value="ALL">Semua Brand (AP Boots & Petrova)</option>
+                    <option value="AP Boots">AP Boots (106 SKU)</option>
+                    <option value="Petrova">Petrova Safety (19 SKU)</option>
+                </select>
+                <div class="view-switcher">
+                    <button class="view-btn active" id="btnViewGrid" onclick="switchView('grid')">🔲 Grid Card</button>
+                    <button class="view-btn" id="btnViewTable" onclick="switchView('table')">📋 Tabel Data</button>
+                </div>
+            </div>
+
+            <!-- Source Flags Filter Row -->
+            <div class="filter-pills-row">
+                <span class="filter-pill-label">Filter Sumber Foto:</span>
+                <button class="pill-btn active" onclick="setSourceFilter('ALL', this)">Semua Sumber</button>
+                <button class="pill-btn pill-shp" onclick="setSourceFilter('SHOPEE', this)">🏷️ Shopee Official</button>
+                <button class="pill-btn pill-pb" onclick="setSourceFilter('PHOTOBANK', this)">🏷️ Photobank Studio B2B</button>
+                <button class="pill-btn pill-tok" onclick="setSourceFilter('TOKOPEDIA_LOCAL', this)">🏷️ Tokopedia Lokal (Offline)</button>
+                <button class="pill-btn pill-tok" onclick="setSourceFilter('TOKOPEDIA', this)">🏷️ Tokopedia Online</button>
+                <button class="pill-btn pill-bli" onclick="setSourceFilter('BLIBLI', this)">🏷️ Blibli</button>
+                <button class="pill-btn pill-lzd" onclick="setSourceFilter('LAZADA', this)">🏷️ Lazada</button>
+            </div>
+        </section>
+
+        <!-- Count Indicator -->
+        <div style="margin-bottom: 16px; font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+            <div>Menampilkan <strong id="filterCount" style="color: #fff;">125</strong> dari <strong>125</strong> Master SKU</div>
+            <div style="font-size: 0.75rem;">Urutan: <strong>Master SKU (001 - 125)</strong></div>
+        </div>
+
+        <!-- Products Grid Container -->
+        <div id="productsGrid" class="products-grid"></div>
+
+        <!-- Comprehensive Table View Container -->
+        <div id="tableViewWrap" class="table-view-wrap">
+            <table class="master-table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Master SKU</th>
+                        <th>Orig SKU</th>
+                        <th>Brand</th>
+                        <th>Nama Model Produk</th>
+                        <th>Kategori</th>
+                        <th>Warna</th>
+                        <th>Material Upper / Outsole</th>
+                        <th>Harga Rata-Rata (IDR)</th>
+                        <th>Wholesale FOB (USD)</th>
+                        <th>Karton / CBM</th>
+                        <th>Sumber Foto</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Modal Galeri Multi-Sumber -->
+    <div id="refGalleryModal" class="modal-overlay" onclick="closeGalleryModalOnOverlay(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <h2 id="modalProductName">Nama Produk</h2>
+                    <p id="modalProductMeta">Master SKU • Brand • Kategori</p>
+                </div>
+                <button class="btn-close-modal" onclick="closeGalleryModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="font-size: 0.82rem; color: #cbd5e1;">
+                        Total Referensi Visual: <strong id="modalImgCount" style="color: #38bdf8;">0</strong> Foto Berbagai Sumber Terverifikasi
+                    </div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">
+                        Klik pada gambar untuk membuka resolusi penuh.
+                    </div>
+                </div>
+                <div id="galleryGrid" class="gallery-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Modal Detail Lengkap & Deskripsi -->
+    <div id="productDetailModal" class="modal-overlay" onclick="closeDetailModalOnOverlay(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 1050px;">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <h2 id="detModalProductName">Detail Lengkap Produk & Deskripsi</h2>
+                    <p id="detModalProductMeta" style="font-family: monospace; color: #38bdf8;">MST-xxx • Barcode: xxxxxxxxxxxxx • Brand</p>
+                </div>
+                <button class="btn-close-modal" onclick="closeDetailModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding: 20px 24px;">
+                <!-- Fast Copy Toolbar -->
+                <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn-action" style="background: #10b981; color: #fff;" onclick="copyCurrentDesc('id')">📋 Salin Deskripsi (ID)</button>
+                    <button class="btn-action" style="background: #0284c7; color: #fff;" onclick="copyCurrentDesc('en')">📋 Salin Description (EN)</button>
+                    <button class="btn-action" style="background: #f59e0b; color: #000; font-weight: 800;" onclick="copyCurrentBarcode()">📋 Salin Barcode EAN-13</button>
+                    <button class="btn-action" style="background: #6366f1; color: #fff;" onclick="copyCurrentSql()">📋 Salin SQL INSERT</button>
+                </div>
+
+                <!-- Tabs switcher -->
+                <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 16px;">
+                    <button id="tabBtnDescId" class="pill-btn active" onclick="switchDetailTab('desc_id')">🇮🇩 Deskripsi Indonesia</button>
+                    <button id="tabBtnDescEn" class="pill-btn" onclick="switchDetailTab('desc_en')">🇬🇧 B2B Export Description (EN)</button>
+                    <button id="tabBtnSpecs" class="pill-btn" onclick="switchDetailTab('specs')">⚙️ Spesifikasi Teknis & Identifikasi SQL</button>
+                </div>
+
+                <!-- Tab 1: Indonesian Description -->
+                <div id="tabContentDescId" style="display: block;">
+                    <div style="background: #090d16; border: 1px solid var(--border); border-radius: 10px; padding: 18px; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; white-space: pre-wrap; font-family: inherit;" id="detDescIdText"></div>
+                </div>
+
+                <!-- Tab 2: English Description -->
+                <div id="tabContentDescEn" style="display: none;">
+                    <div style="background: #090d16; border: 1px solid var(--border); border-radius: 10px; padding: 18px; font-size: 0.88rem; line-height: 1.7; color: #e2e8f0; white-space: pre-wrap; font-family: inherit;" id="detDescEnText"></div>
+                </div>
+
+                <!-- Tab 3: Technical Specs & SQL Identifiers -->
+                <div id="tabContentSpecs" style="display: none;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;" id="detSpecsGrid">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="finalToast">
+        <span id="toastIcon">✓</span>
+        <span id="toastMsg">Tindakan berhasil!</span>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let activeSourceFilter = 'ALL';
+        let currentView = 'grid';
+
+        // Load data on page init
+        async function loadMasterData() {
+            try {
+                const res = await fetch('/master_products_catalog.json');
+                const data = await res.json();
+                allProducts = data.products || [];
+
+                document.getElementById('statTotalSkus').innerText = allProducts.length;
+                const totalImgs = allProducts.reduce((sum, p) => sum + (p.reference_images_count || p.total_reference_images || (p.reference_images ? p.reference_images.length : 0)), 0);
+                document.getElementById('statTotalImages').innerText = totalImgs.toLocaleString();
+
+                populateCategoryDropdown();
+                renderCatalog();
+            } catch (err) {
+                console.error("Gagal memuat master_products_catalog.json:", err);
+                alert("Gagal memuat data master catalog. Pastikan server aktif.");
+            }
+        }
+
+        function populateCategoryDropdown() {
+            const select = document.getElementById('categoryFilter');
+            const cats = Array.from(new Set(allProducts.map(p => p.category_group || p.category))).sort();
+            cats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = c;
+                select.appendChild(opt);
+            });
+        }
+
+        function setSourceFilter(src, btn) {
+            activeSourceFilter = src;
+            document.querySelectorAll('.filter-pills-row .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderCatalog();
+        }
+
+        function onFilterChange() {
+            renderCatalog();
+        }
+
+        function switchView(mode) {
+            currentView = mode;
+            document.getElementById('btnViewGrid').classList.toggle('active', mode === 'grid');
+            document.getElementById('btnViewTable').classList.toggle('active', mode === 'table');
+            document.getElementById('productsGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+            document.getElementById('tableViewWrap').style.display = mode === 'table' ? 'block' : 'none';
+        }
+
+        function renderCatalog() {
+            const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const cat = document.getElementById('categoryFilter').value;
+            const brand = document.getElementById('brandFilter').value;
+
+            const filtered = allProducts.filter(p => {
+                if (brand !== 'ALL' && p.brand !== brand) return false;
+                if (cat !== 'ALL' && (p.category_group !== cat && p.category !== cat)) return false;
+                if (activeSourceFilter !== 'ALL' && !(p.sources_available || []).includes(activeSourceFilter)) return false;
+
+                if (query) {
+                    const matchText = `${p.master_sku} ${p.original_sku} ${p.product_name} ${p.color} ${p.material_upper} ${p.safety_features} ${p.category}`.toLowerCase();
+                    if (!matchText.includes(query)) return false;
+                }
+                return true;
+            });
+
+            document.getElementById('filterCount').innerText = filtered.length;
+
+            if (currentView === 'grid') {
+                renderGrid(filtered);
+            } else {
+                renderTable(filtered);
+            }
+        }
+
+        function formatIDR(val) {
+            return 'Rp ' + Number(val || 0).toLocaleString('id-ID');
+        }
+
+        function renderGrid(products) {
+            const container = document.getElementById('productsGrid');
+            container.innerHTML = '';
+
+            if (products.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #94a3b8; font-weight: 700;">
+                    🔍 Tidak ada produk yang sesuai dengan kriteria filter.
+                </div>`;
+                return;
+            }
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+
+                const brandClass = p.brand === 'Petrova' ? 'brand-petrova' : 'brand-ap';
+                const pm = p.price_matrix || { avg_retail_idr: p.price_retail_avg_idr, wholesale_export_usd: p.price_fob_usd };
+                const pk = p.packaging || { pairs_per_carton: p.pairs_per_carton, carton_cbm: p.carton_volume_cbm };
+
+                let primImg = p.primary_image || p.primary_image_url;
+                if (!primImg || primImg === '/assets/placeholder_boot.webp') {
+                    if (p.reference_images && p.reference_images.length > 0) {
+                        const foundPrim = p.reference_images.find(r => r.is_primary) || p.reference_images[0];
+                        if (foundPrim && foundPrim.url) primImg = foundPrim.url;
+                    }
+                }
+                if (!primImg) primImg = '/assets/placeholder_boot.webp';
+
+                // Source dots
+                let sourceDotsHtml = '';
+                (p.sources_available || []).forEach(src => {
+                    let dotClass = 'dot-pb';
+                    if (src === 'SHOPEE') dotClass = 'dot-shp';
+                    else if (src === 'TOKOPEDIA' || src === 'TOKOPEDIA_LOCAL') dotClass = 'dot-tok';
+                    else if (src === 'BLIBLI') dotClass = 'dot-bli';
+                    else if (src === 'LAZADA') dotClass = 'dot-lzd';
+                    let displaySrc = src === 'TOKOPEDIA_LOCAL' ? 'TOKOPEDIA LOKAL' : src;
+                    sourceDotsHtml += `<span class="dot-badge ${dotClass}">[${displaySrc}]</span>`;
+                });
+
+                // Flag tag color
+                let flagColor = '#8b5cf6';
+                if (p.primary_image_source === 'SHOPEE') flagColor = '#ee4d2d';
+                else if (p.primary_image_source === 'TOKOPEDIA' || p.primary_image_source === 'TOKOPEDIA_LOCAL') flagColor = '#03ac0e';
+
+                card.innerHTML = `
+                    <div class="card-header-bar">
+                        <div class="sku-badge-box">
+                            <span class="badge-master-sku">${p.master_sku}</span>
+                            <span class="badge-orig-sku">${p.original_sku}</span>
+                        </div>
+                        <span class="badge-brand ${brandClass}">${p.brand}</span>
+                    </div>
+
+                    <div class="card-img-wrap">
+                        <span class="source-flag-tag" style="background: ${flagColor};">
+                            🏷️ [${p.primary_image_source || 'MASTER'}]
+                        </span>
+                        <img src="${primImg}" alt="${p.product_name}" loading="lazy" onerror="this.src='/assets/placeholder_boot.webp'">
+                    </div>
+
+                    <div class="card-body">
+                        <div class="category-text">${p.category_group || p.category}</div>
+                        <h3 class="product-title" title="${p.product_name}">${p.product_name}</h3>
+
+                        <div class="specs-chips">
+                            <span class="chip-spec">🎨 ${p.color}</span>
+                            <span class="chip-spec">📏 ${p.sizes}</span>
+                            <span class="chip-spec">🛡️ ${p.safety_features ? p.safety_features.split(',')[0] : 'SNI'}</span>
+                        </div>
+
+                        <div class="price-matrix-card">
+                            <div class="price-item-col">
+                                <span class="price-col-lbl">Rata-Rata Ritel</span>
+                                <span class="price-col-val">${formatIDR(pm.avg_retail_idr)}</span>
+                            </div>
+                            <div class="price-item-col">
+                                <span class="price-col-lbl">Wholesale FOB</span>
+                                <span class="price-col-val usd">$ ${Number(pm.wholesale_export_usd || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Sumber Foto Tersedia:</span>
+                            <div class="source-dots-row">
+                                ${sourceDotsHtml}
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn-gallery" onclick="openGalleryModal(${p.id})">
+                                <span>🖼️</span> Galeri (${p.reference_images_count || (p.reference_images ? p.reference_images.length : 0)} Foto)
+                            </button>
+                            <button class="btn-gallery" style="background: linear-gradient(135deg, #0284c7, #0369a1);" onclick="openProductDetailModal(${p.id})">
+                                <span>📝</span> Detail & K3
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderTable(products) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                const pm = p.price_matrix || { avg_retail_idr: p.price_retail_avg_idr, wholesale_export_usd: p.price_fob_usd };
+                const pk = p.packaging || { pairs_per_carton: p.pairs_per_carton, carton_cbm: p.carton_volume_cbm };
+
+                let primImg = p.primary_image || p.primary_image_url;
+                if (!primImg || primImg === '/assets/placeholder_boot.webp') {
+                    if (p.reference_images && p.reference_images.length > 0) {
+                        const foundPrim = p.reference_images.find(r => r.is_primary) || p.reference_images[0];
+                        if (foundPrim && foundPrim.url) primImg = foundPrim.url;
+                    }
+                }
+                if (!primImg) primImg = '/assets/placeholder_boot.webp';
+
+                tr.innerHTML = `
+                    <td><img src="${primImg}" class="tbl-thumb" onerror="this.src='/assets/placeholder_boot.webp'"></td>
+                    <td><strong style="color: #38bdf8;">${p.master_sku}</strong></td>
+                    <td><span style="font-family: monospace; color: #94a3b8;">${p.original_sku}</span></td>
+                    <td><strong>${p.brand}</strong></td>
+                    <td><strong style="color: #fff;">${p.product_name}</strong></td>
+                    <td style="font-size: 0.75rem;">${p.category || p.category_name}</td>
+                    <td>${p.color}</td>
+                    <td style="font-size: 0.72rem; max-width: 180px;">${p.material_upper}</td>
+                    <td><strong style="color: #34d399;">${formatIDR(pm.avg_retail_idr)}</strong></td>
+                    <td><strong style="color: #fbbf24;">$ ${Number(pm.wholesale_export_usd || 0).toFixed(2)}</strong></td>
+                    <td style="font-size: 0.72rem;">${pk.pairs_per_carton || 12} psg (${pk.carton_cbm || 0.096} m³)</td>
+                    <td><span style="font-size: 0.68rem; background: #334155; padding: 2px 6px; border-radius: 4px;">${(p.sources_available || []).join(', ')}</span></td>
+                    <td>
+                        <div style="display: flex; gap: 4px;">
+                            <button onclick="openGalleryModal(${p.id})" style="background: #4f46e5; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 0.72rem; cursor: pointer;">
+                                🖼️ Foto (${p.reference_images_count || p.total_reference_images || (p.reference_images ? p.reference_images.length : 0)})
+                            </button>
+                            <button onclick="openProductDetailModal(${p.id})" style="background: #0284c7; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 0.72rem; cursor: pointer;">
+                                📝 Detail
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Open Gallery Modal
+        function openGalleryModal(productId) {
+            const p = allProducts.find(item => item.id === productId);
+            if (!p) return;
+
+            const pm = p.price_matrix || { avg_retail_idr: p.price_retail_avg_idr, wholesale_export_usd: p.price_fob_usd };
+            document.getElementById('modalProductName').innerText = p.product_name;
+            document.getElementById('modalProductMeta').innerText = `${p.master_sku} • ${p.brand} • ${p.category || p.category_name} • Matriks Harga: ${formatIDR(pm.avg_retail_idr)} / $${Number(pm.wholesale_export_usd || 0).toFixed(2)}`;
+            document.getElementById('modalImgCount').innerText = p.reference_images_count || p.total_reference_images || (p.reference_images ? p.reference_images.length : 0);
+
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+
+            p.reference_images.forEach((img, idx) => {
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+
+                card.innerHTML = `
+                    <div class="gallery-img-box" onclick="window.open('${img.url}', '_blank')">
+                        <img src="${img.url}" alt="${img.title}" loading="lazy" onerror="this.src='/assets/placeholder_boot.webp'">
+                    </div>
+                    <div class="gallery-card-info">
+                        <span class="gallery-flag-badge" style="background: ${img.flag_color || '#8b5cf6'};">
+                            🏷️ ${img.flag}
+                        </span>
+                        <div class="gallery-img-title">${img.title}</div>
+                        <div class="gallery-img-type">Tipe: ${img.type}</div>
+                        <div class="gallery-card-actions">
+                            <button class="btn-copy-url" onclick="copyText('${img.url}')">📋 Salin URL</button>
+                            <a href="${img.url}" target="_blank" class="btn-open-img">🔍 Buka</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('refGalleryModal').style.display = 'flex';
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('refGalleryModal').style.display = 'none';
+        }
+
+        function closeGalleryModalOnOverlay(e) {
+            if (e.target.id === 'refGalleryModal') {
+                closeGalleryModal();
+            }
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            showToast('✓ URL foto berhasil disalin ke clipboard!');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('finalToast');
+            const m = document.getElementById('toastMsg');
+            m.innerText = msg;
+            t.style.display = 'flex';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        async function triggerResync() {
+            showToast('⏳ Memulai sinkronisasi ulang data...');
+            try {
+                const res = await fetch('/api/master/resync', { method: 'POST' });
+                const d = await res.json();
+                if (d.success) {
+                    showToast('✓ Berhasil disinkronisasi!');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    alert('Gagal resync: ' + d.error);
+                }
+            } catch (e) {
+                // if standalone static file
+                window.location.reload();
+            }
+        }
+
+        
+        let activeDetailProduct = null;
+
+        function openProductDetailModal(productId) {
+            const p = allProducts.find(item => item.id === productId);
+            if (!p) return;
+            activeDetailProduct = p;
+
+            document.getElementById('detModalProductName').innerText = p.product_name;
+            document.getElementById('detModalProductMeta').innerText = `${p.master_sku} • Barcode EAN-13: ${p.barcode_ean13 || '-'} • HS Code: ${p.hs_code || '6401.92.00'} • ${p.brand} (${p.category_name || p.category})`;
+
+            document.getElementById('detDescIdText').innerText = p.description_id || 'Deskripsi belum tersedia.';
+            document.getElementById('detDescEnText').innerText = p.description_en || 'English description not available.';
+
+            // Populate Specs Grid
+            const cr = p.marketplace_crossref || {};
+            const pk = p.packaging || {};
+            const pm = p.price_matrix || {};
+
+            const specsHtml = `
+                <div style="background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
+                    <h4 style="font-size: 0.78rem; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px;">🔑 Identifikasi & Cross-Reference</h4>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Master SKU:</strong> <code style="color: #34d399;">${p.master_sku}</code></p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Original SKU:</strong> <code style="color: #94a3b8;">${p.original_sku}</code></p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Barcode EAN-13:</strong> <code style="color: #fbbf24;">${p.barcode_ean13}</code></p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Shopee SKU:</strong> ${cr.shopee_sku || '-'}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Tokopedia ID:</strong> ${cr.tokopedia_id || '-'}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Blibli / Lazada:</strong> ${cr.blibli_id || '-'} / ${cr.lazada_id || '-'}</p>
+                    <p style="font-size: 0.75rem;"><strong>Alibaba Matrix:</strong> ${cr.alibaba_matrix_sku || '-'}</p>
+                </div>
+
+                <div style="background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
+                    <h4 style="font-size: 0.78rem; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px;">🛡️ Standar K3 & Material</h4>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Material Upper:</strong> ${p.material_upper}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Material Outsole:</strong> ${p.material_outsole}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Steel Toe Cap:</strong> ${p.steel_toe_cap || 'None'}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Anti-Puncture Midsole:</strong> ${p.anti_puncture_midsole || 'None'}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Slip Rating:</strong> ${p.slip_resistance_rating || 'SRC Cleated'}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Tinggi Shaft:</strong> ${p.shaft_height_cm || 38.0} cm</p>
+                    <p style="font-size: 0.75rem;"><strong>Bobot Per Pasang:</strong> ${p.weight_per_pair_g || 1850} gram</p>
+                </div>
+
+                <div style="background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
+                    <h4 style="font-size: 0.78rem; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px;">📦 Kemasan & Logistik Kontainer</h4>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Isi Karton:</strong> ${p.pairs_per_carton || 12} pasang / karton</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Volume Karton (CBM):</strong> ${p.carton_volume_cbm || 0.096} m³</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Berat Kotor (Gross Wt):</strong> ${p.carton_gross_weight_kg || 18.5} kg</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Muatan 20ft FCL:</strong> ${Number(p.container_20ft_capacity_pairs || 3600).toLocaleString()} pasang</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Muatan 40ft HQ FCL:</strong> ${Number(p.container_40ft_hq_capacity_pairs || 8500).toLocaleString()} pasang</p>
+                    <p style="font-size: 0.75rem;"><strong>Pelabuhan Muat:</strong> ${p.port_of_loading || 'Tanjung Perak, Surabaya'}</p>
+                </div>
+
+                <div style="background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
+                    <h4 style="font-size: 0.78rem; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px;">💰 Matriks Harga & Ekspor</h4>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Harga Rata-Rata Ritel:</strong> <span style="color: #34d399; font-weight: 700;">${formatIDR(p.price_retail_avg_idr || pm.avg_retail_idr)}</span></p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Grosir B2B Domestik:</strong> ${formatIDR(p.price_wholesale_idr || (pm.avg_retail_idr*0.75))}</p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>FOB Export Price:</strong> <span style="color: #fbbf24; font-weight: 700;">$ ${Number(p.price_fob_usd || pm.wholesale_export_usd || 0).toFixed(2)} / pasang</span></p>
+                    <p style="font-size: 0.75rem; margin-bottom: 4px;"><strong>Minimal Pemesanan (MOQ):</strong> ${p.moq_pairs || 100} pasang</p>
+                    <p style="font-size: 0.75rem;"><strong>Negara Asal:</strong> ${p.origin_country || 'Indonesia'}</p>
+                </div>
+            `;
+            document.getElementById('detSpecsGrid').innerHTML = specsHtml;
+
+            switchDetailTab('desc_id');
+            document.getElementById('productDetailModal').style.display = 'flex';
+        }
+
+        function closeDetailModal() {
+            document.getElementById('productDetailModal').style.display = 'none';
+        }
+
+        function closeDetailModalOnOverlay(e) {
+            if (e.target.id === 'productDetailModal') closeDetailModal();
+        }
+
+        function switchDetailTab(tab) {
+            document.getElementById('tabBtnDescId').classList.toggle('active', tab === 'desc_id');
+            document.getElementById('tabBtnDescEn').classList.toggle('active', tab === 'desc_en');
+            document.getElementById('tabBtnSpecs').classList.toggle('active', tab === 'specs');
+
+            document.getElementById('tabContentDescId').style.display = tab === 'desc_id' ? 'block' : 'none';
+            document.getElementById('tabContentDescEn').style.display = tab === 'desc_en' ? 'block' : 'none';
+            document.getElementById('tabContentSpecs').style.display = tab === 'specs' ? 'block' : 'none';
+        }
+
+        function copyCurrentDesc(lang) {
+            if (!activeDetailProduct) return;
+            const textToCopy = lang === 'id' ? activeDetailProduct.description_id : activeDetailProduct.description_en;
+            navigator.clipboard.writeText(textToCopy);
+            showToast(`✓ Deskripsi (${lang.toUpperCase()}) berhasil disalin!`);
+        }
+
+        function copyCurrentBarcode() {
+            if (!activeDetailProduct) return;
+            navigator.clipboard.writeText(activeDetailProduct.barcode_ean13);
+            showToast(`✓ Barcode EAN-13 [${activeDetailProduct.barcode_ean13}] berhasil disalin!`);
+        }
+
+        function copyCurrentSql() {
+            if (!activeDetailProduct) return;
+            const p = activeDetailProduct;
+            const sqlInsert = `SELECT * FROM v_master_products_full WHERE master_sku = '${p.master_sku}';`;
+            navigator.clipboard.writeText(sqlInsert);
+            showToast('✓ SQL Query berhasil disalin ke clipboard!');
+        }
+
+        window.addEventListener('DOMContentLoaded', loadMasterData);
+    </script>
+</body>
+</html>
+

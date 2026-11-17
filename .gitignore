@@ -10,10 +10,16 @@ Output/
 Output_PadiUMKM/
 output_images/
 Image Flow/
+Image Have/
 datagambar photbank/
 *.zip
 *.tar.gz
 *.mp4
+
+# Secrets & Knowledge Graph caches
+Doc/OPENAI_API_KEY.txt
+graphify-out/
+**/graphify-out/
 
 # IDE and OS files
 .vscode/
