@@ -545,33 +545,101 @@
     return null;
   }
 
+  function findFlowResolutionMenuItem(resLabel) {
+    const items = Array.from(document.querySelectorAll("button[role='menuitem'], .mat-mdc-menu-item, [role='menuitem']"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+    return items.find((el) => {
+      const lbl = el.querySelector(".label");
+      const txt = (lbl ? lbl.innerText : el.innerText || "").trim();
+      return new RegExp(`^${resLabel}\\b`, "i").test(txt);
+    }) || null;
+  }
+
+  function findFlowEditorDownloadButton() {
+    const btns = Array.from(document.querySelectorAll("button, [role='button']"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+    return btns.find((b) => {
+      const aria = (b.getAttribute("aria-label") || b.title || "").toLowerCase();
+      const icon = b.querySelector("mat-icon");
+      const iconTxt = icon ? (icon.innerText || "").trim().toLowerCase() : "";
+      return /download|unduh/.test(aria) || ["download", "file_download", "save_alt"].includes(iconTxt);
+    }) || null;
+  }
+
+  function findFlowEditorBackButton() {
+    const btns = Array.from(document.querySelectorAll("button, [role='button']"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+    return btns.find((b) => {
+      const aria = (b.getAttribute("aria-label") || b.title || "").toLowerCase();
+      const txt = (b.innerText || "").trim().toLowerCase();
+      const icon = b.querySelector("mat-icon");
+      const iconTxt = icon ? (icon.innerText || "").trim().toLowerCase() : "";
+      return /kembali|back/.test(aria) || txt === "selesai" || iconTxt === "arrow_back";
+    }) || null;
+  }
+
+  function resolveFlowSlotIndex(altText, fallbackIdx) {
+    const a = (altText || "").toLowerCase();
+    if (/3\/4|hero|front 3\/4/.test(a)) return 1;
+    if (/90-degree|side profile/.test(a)) return 2;
+    if (/outsole tread/.test(a)) return 3;
+    if (/wet|worn|documentary|b2b commercial|monsoon/.test(a)) return 4;
+    return fallbackIdx;
+  }
+
   async function downloadFlowCardResolution(cardEl, slotIdx) {
-    if (isPaused) return false;
+    if (isPaused || !cardEl) return false;
     const isHero = slotIdx === 1;
+
+    // 1. Try inline more/⋮ menu if present on grid card
     cardEl.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
-    await sleep(250);
-
+    await sleep(200);
     const moreBtn = Array.from(cardEl.querySelectorAll("button, [role='button']"))
-      .find((b) => /more|⋮|menu|option/i.test(`${b.innerText} ${b.getAttribute("aria-label") || ""}`) || b.querySelector("svg"));
-    if (!moreBtn) return false;
+      .filter((b) => b.offsetParent !== null)
+      .find((b) => {
+        const iconTxt = (b.querySelector("mat-icon")?.innerText || "").trim().toLowerCase();
+        return /more|⋮|menu|option/.test(`${b.innerText} ${b.getAttribute("aria-label") || ""}`.toLowerCase()) || iconTxt === "more_vert";
+      });
 
-    moreBtn.click();
-    await sleep(350);
-
-    const dlItem = findClickableByText([/^download$/i, /download/i]);
-    if (!dlItem) return false;
-    dlItem.dispatchEvent(new PointerEvent("pointerenter", { bubbles: true }));
-    dlItem.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
-    dlItem.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
-    await sleep(300);
-    if (!findClickableByText([/^2k/i, /^1k/i])) {
-      dlItem.click();
+    let openedEditor = false;
+    if (moreBtn) {
+      moreBtn.click();
       await sleep(350);
+      const dlItem = findClickableByText([/^download$/i, /download/i]);
+      if (dlItem) {
+        dlItem.dispatchEvent(new PointerEvent("pointerenter", { bubbles: true }));
+        dlItem.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+        await sleep(300);
+        if (!findFlowResolutionMenuItem("2K") && !findFlowResolutionMenuItem("1K")) {
+          dlItem.click();
+          await sleep(350);
+        }
+      }
+    } else {
+      // 2. Flow Agent panel / Editor flow: click thumbnail -> /edit/<id> -> Download (↓) -> 2K/1K -> Back
+      const clickTarget = cardEl.matches("[aria-label='Buka gambar di editor']")
+        ? cardEl
+        : cardEl.querySelector("[aria-label='Buka gambar di editor'], img") || cardEl;
+      clickTarget.click();
+      openedEditor = true;
+
+      let dlBtn = null;
+      for (let t = 0; t < 12; t++) {
+        await sleep(300);
+        dlBtn = findFlowEditorDownloadButton();
+        if (dlBtn) break;
+      }
+      if (!dlBtn) {
+        const backBtn = findFlowEditorBackButton();
+        if (backBtn) { backBtn.click(); await sleep(700); }
+        return false;
+      }
+      dlBtn.click();
+      await sleep(450);
     }
 
-    // Look for 2K and 1K options in the submenu
-    const opt2K = findClickableByText([/^2k/i, /2k\b/i]);
-    const opt1K = findClickableByText([/^1k/i, /1k\b/i]);
+    const opt2K = findFlowResolutionMenuItem("2K") || findClickableByText([/^2k/i, /2k\b/i]);
+    const opt1K = findFlowResolutionMenuItem("1K") || findClickableByText([/^1k/i, /1k\b/i]);
 
     const isLimited = (el) => {
       if (!el) return true;
@@ -580,37 +648,51 @@
       return ariaDis || txt.includes("upgrade");
     };
 
+    let downloaded = false;
     if (isHero) {
       if (opt2K && !isLimited(opt2K)) {
         await sendMsg({ type: "BRIDGE_SET_SETTINGS", flowSlotIndex: 1, flowLastRes: "2K" });
         opt2K.click();
         setLog(`✓ Hero (Slot 1) diunduh resolusi 2K!`);
-        return true;
+        downloaded = true;
+      } else {
+        setLog(`⚠️ Hero wajib 2K, namun opsi 2K tidak tersedia/terkunci.`);
       }
-      setLog(`⚠️ Hero wajib 2K, namun opsi 2K tidak tersedia/terkunci.`);
-      return false;
-    }
-
-    // Slot 2-4: try 2K, fallback to 1K if limited
-    if (opt2K && !isLimited(opt2K)) {
+    } else if (opt2K && !isLimited(opt2K)) {
       await sendMsg({ type: "BRIDGE_SET_SETTINGS", flowSlotIndex: slotIdx, flowLastRes: "2K" });
       opt2K.click();
       setLog(`✓ Slot ${slotIdx} diunduh resolusi 2K!`);
-      return true;
-    }
-    if (opt1K) {
+      downloaded = true;
+    } else if (opt1K && !isLimited(opt1K)) {
       await sendMsg({ type: "BRIDGE_SET_SETTINGS", flowSlotIndex: slotIdx, flowLastRes: "1K" });
       opt1K.click();
       setLog(`✓ Slot ${slotIdx} fallback ke resolusi 1K (2K limited).`);
-      return true;
+      downloaded = true;
     }
-    return false;
+
+    if (downloaded) await sleep(1300);
+    if (openedEditor) {
+      const backBtn = findFlowEditorBackButton();
+      if (backBtn) {
+        backBtn.click();
+        await sleep(900);
+      }
+    }
+    return downloaded;
   }
 
   function getFlowGeneratedCards() {
+    // Prefer Agent panel gallery options (flow-a2ui-image-option) when visible
+    const agentOptions = Array.from(document.querySelectorAll("flow-agent-panel flow-a2ui-image-option div[aria-label='Buka gambar di editor']"))
+      .filter((el) => {
+        const img = el.querySelector("img.image-thumbnail, img");
+        return el.offsetParent !== null && img && (img.naturalWidth >= 200 || (img.src && img.src.includes("flow.google.com/asb/")));
+      });
+    if (agentOptions.length > 0) return agentOptions;
+
     const cards = Array.from(document.querySelectorAll("img"))
-      .filter((img) => img.offsetParent !== null && img.naturalWidth >= 256 && !img.closest("#hots-ext-panel"))
-      .map((img) => img.closest("[class*='card'], [class*='item'], [class*='tile'], div"))
+      .filter((img) => img.offsetParent !== null && img.naturalWidth >= 256 && !img.closest("#hots-ext-panel") && !img.classList.contains("chip-image"))
+      .map((img) => img.closest("[aria-label='Buka gambar di editor'], [class*='card'], [class*='item'], [class*='tile'], div"))
       .filter(Boolean);
     return Array.from(new Set(cards));
   }
@@ -694,24 +776,44 @@
       setLog("⏸️ Sedang Pause. Klik Resume untuk melanjutkan Auto-Download.");
       return { ok: false, message: "Paused" };
     }
-    const uniqueCards = (targetCards && targetCards.length ? targetCards : getFlowGeneratedCards()).slice(0, 4);
+    const rawCards = targetCards && targetCards.length ? targetCards : getFlowGeneratedCards().slice(-4);
+    const uniqueCards = rawCards.slice(-4);
     if (uniqueCards.length === 0) {
       const msg = "Belum ada kartu gambar hasil Flow yang terdeteksi di layar.";
       setLog(msg);
       return { ok: false, message: msg };
     }
 
+    // Snapshot src + slot index before Angular SPA /edit navigation re-renders DOM
+    const targets = uniqueCards
+      .map((card, idx) => {
+        const img = card.querySelector("img");
+        return {
+          card,
+          src: img ? img.src : "",
+          slotIdx: resolveFlowSlotIndex(img ? img.alt : "", idx + 1)
+        };
+      })
+      .sort((a, b) => a.slotIdx - b.slotIdx);
+
     let dlCount = 0;
-    for (let i = 0; i < uniqueCards.length; i++) {
+    for (let i = 0; i < targets.length; i++) {
       if (isPaused) {
         setLog(`⏸️ Dijeda setelah ${dlCount} gambar.`);
         break;
       }
-      const ok = await downloadFlowCardResolution(uniqueCards[i], i + 1);
+      setProgress(85 + Math.round(((i + 1) / targets.length) * 15), `⬇️ Mengunduh Slot ${targets[i].slotIdx} (${i + 1}/${targets.length})...`);
+      let liveCard = targets[i].card;
+      if ((!liveCard || !document.body.contains(liveCard)) && targets[i].src) {
+        liveCard = getFlowGeneratedCards().find((c) => c.querySelector("img")?.src === targets[i].src) || null;
+      }
+      if (!liveCard) continue;
+      const ok = await downloadFlowCardResolution(liveCard, targets[i].slotIdx);
       if (ok) dlCount++;
-      await sleep(900);
+      await sleep(700);
     }
-    const msg = `✓ Proses Auto-Download selesai (${dlCount}/${uniqueCards.length} gambar). Memuat ke Foto Lokal Produk...`;
+    const msg = `✓ Proses Auto-Download selesai (${dlCount}/${targets.length} gambar). Memuat ke Foto Lokal Produk...`;
+    setProgress(dlCount > 0 ? 100 : 80, dlCount > 0 ? `✓ ${dlCount} gambar diunduh` : "⚠️ Belum ada gambar terunduh");
     setLog(msg);
     if (dlCount > 0) {
       await sleep(1800);
