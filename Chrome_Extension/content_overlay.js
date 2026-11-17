@@ -693,11 +693,12 @@
   }
 
   function getFlowGeneratedCards() {
-    // Prefer Agent panel gallery options (flow-a2ui-image-option) when visible
+    // Prefer Agent panel gallery options (flow-a2ui-image-option) when visible and finished loading
     const agentOptions = Array.from(document.querySelectorAll("flow-agent-panel flow-a2ui-image-option div[aria-label='Buka gambar di editor']"))
       .filter((el) => {
         const img = el.querySelector("img.image-thumbnail, img");
-        return el.offsetParent !== null && img && (img.naturalWidth >= 200 || (img.src && img.src.includes("flow.google.com/asb/")));
+        const isStillLoading = (img && img.classList.contains("loading")) || Boolean(el.querySelector("flow-soupy-overlay.loading-overlay"));
+        return el.offsetParent !== null && img && !isStillLoading && (img.naturalWidth >= 200 || (img.src && img.src.includes("flow.google.com/asb/")));
       });
     if (agentOptions.length > 0) return agentOptions;
 
