@@ -8,13 +8,13 @@ const WORKSPACE_URLS = {
   flow: "https://flow.google.com/project/5a88c3fd-477c-4eed-a126-f812ccfb079c",
   photobank: "https://photobank.alibaba.com/?spm=a2747.$spmCode.0.0.486254bez2VZ2Y",
   list: "https://i.alibaba.com/products/list-manage?spm=a2700.post-success.0.0.290f3e5fVEhelJ#/product/all",
-  publish: "https://i.alibaba.com/products/publish-plan"
+  publish: "https://post.alibaba.com/product/publish.htm"
 };
 
 const WORKSPACE_MATCHERS = {
   flow: (url) => url.includes("flow.google.com/project/5a88c3fd-477c-4eed-a126-f812ccfb079c") || url.includes("flow.google.com"),
   photobank: (url) => url.includes("photobank.alibaba.com"),
-  publish: (url) => url.includes("i.alibaba.com/products/publish-plan"),
+  publish: (url) => url.includes("post.alibaba.com/product/publish.htm") || url.includes("i.alibaba.com/products/publish-plan"),
   list: (url) => url.includes("i.alibaba.com/products/list-manage")
 };
 

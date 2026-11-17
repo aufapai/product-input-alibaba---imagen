@@ -27,9 +27,13 @@
   const panel = document.createElement("div");
   panel.id = "hots-ext-panel";
   panel.innerHTML = `
-    <div id="hots-ext-hdr" title="Klik untuk minimize/expand">
+    <div id="hots-ext-hdr">
       <span id="hots-ext-title">HOTS Bridge (:8888)</span>
-      <span id="hots-ext-status">Connecting...</span>
+      <div class="hots-hdr-right">
+        <span id="hots-ext-status">Connecting...</span>
+        <button id="hots-btn-minimize" class="hots-hdr-btn" title="Minimize / Expand panel">Minimize</button>
+        <button id="hots-btn-close" class="hots-hdr-btn close" title="Tutup sementara panel">Close</button>
+      </div>
     </div>
     <div id="hots-ext-body">
       <div class="hots-top-pills">
@@ -80,12 +84,29 @@
         <button id="hots-btn-copy-title" class="hots-btn sec">Salin Judul + KW</button>
         <button id="hots-btn-copy-flow" class="hots-btn sec">Salin 4 Prompt Flow</button>
       </div>
+
+      <div class="hots-progress-wrap">
+        <div class="hots-progress-hdr">
+          <span id="hots-progress-text">⏳ Siap memproses</span>
+          <span id="hots-progress-pct">0%</span>
+        </div>
+        <div class="hots-progress-bar">
+          <div id="hots-progress-fill" class="hots-progress-fill"></div>
+        </div>
+      </div>
       <div id="hots-ext-log">Siap. Pilih kategori atau SKU untuk memuat thumbnail lokal.</div>
     </div>
   `;
   document.body.appendChild(panel);
 
+  const reopenBtn = document.createElement("button");
+  reopenBtn.id = "hots-ext-reopen";
+  reopenBtn.textContent = "🔓 Buka HOTS Bridge";
+  document.body.appendChild(reopenBtn);
+
   const hdr = document.getElementById("hots-ext-hdr");
+  const btnMinimize = document.getElementById("hots-btn-minimize");
+  const btnClose = document.getElementById("hots-btn-close");
   const statusEl = document.getElementById("hots-ext-status");
   const catEl = document.getElementById("hots-ext-cat");
   const searchEl = document.getElementById("hots-ext-search");
@@ -97,6 +118,9 @@
   const thumbGrid = document.getElementById("hots-thumb-grid");
   const thumbCountEl = document.getElementById("hots-thumb-count");
   const thumbSelectedEl = document.getElementById("hots-thumb-selected");
+  const progressTextEl = document.getElementById("hots-progress-text");
+  const progressPctEl = document.getElementById("hots-progress-pct");
+  const progressFillEl = document.getElementById("hots-progress-fill");
   const logEl = document.getElementById("hots-ext-log");
 
   let queueItems = [];
@@ -104,11 +128,38 @@
   let selectedImageUrls = new Set();
   let isPaused = false;
   let freezeTimer = null;
+  const logLines = [];
 
-  hdr.addEventListener("click", () => panel.classList.toggle("collapsed"));
+  btnMinimize.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isCollapsed = panel.classList.toggle("collapsed");
+    btnMinimize.textContent = isCollapsed ? "Expand" : "Minimize";
+  });
+
+  btnClose.addEventListener("click", (e) => {
+    e.stopPropagation();
+    panel.style.display = "none";
+    reopenBtn.style.display = "block";
+  });
+
+  reopenBtn.addEventListener("click", () => {
+    panel.style.display = "block";
+    reopenBtn.style.display = "none";
+  });
+
+  function setProgress(pct, label) {
+    const clamped = Math.max(0, Math.min(100, Number(pct) || 0));
+    progressFillEl.style.width = `${clamped}%`;
+    progressPctEl.textContent = `${clamped}%`;
+    if (label) progressTextEl.textContent = label;
+  }
 
   function setLog(txt) {
-    logEl.textContent = txt;
+    const ts = new Date().toTimeString().slice(0, 8);
+    logLines.push(`[${ts}] ${txt}`);
+    if (logLines.length > 40) logLines.shift();
+    logEl.textContent = logLines.join("\n");
+    logEl.scrollTop = logEl.scrollHeight;
   }
 
   function sleep(ms) {
@@ -792,31 +843,118 @@
   // =========================================================
   // 5. AUTO-FILL & FREEZE DI FORM POST ALIBABA
   // =========================================================
+  function getFieldContextLabel(el) {
+    const item = el.closest(".next-form-item, [class*='form-item'], [class*='field'], tr, li, label");
+    const labelText = item ? (item.innerText || "").slice(0, 140) : "";
+    return `${el.name || ""} ${el.id || ""} ${el.placeholder || ""} ${el.getAttribute("aria-label") || ""} ${labelText}`.toLowerCase();
+  }
+
+  async function selectAlibabaPostCategory(p) {
+    const catTrigger = Array.from(document.querySelectorAll("button, [role='button'], [role='combobox'], div[class*='select']"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+      .find((el) => /select a category/i.test((el.innerText || el.getAttribute("aria-label") || "").trim()));
+    if (!catTrigger) return false;
+
+    catTrigger.click();
+    await sleep(600);
+
+    const catLower = `${p.Category_Path || ""} ${p.Photobank_Group_Label || ""} ${p.Product_Name || ""}`.toLowerCase();
+    const patterns = [];
+    if (catLower.includes("safety") || catLower.includes("petrova")) {
+      patterns.push(/work\s*&\s*safety\s*shoes/i, /safety\s*footwear/i, /safety\s*boots/i, /rain\s*boots/i);
+    } else if (catLower.includes("sandal") || catLower.includes("clog") || catLower.includes("slides")) {
+      patterns.push(/slides\s*&\s*slippers/i, /clogs/i, /sandals/i, /rain\s*boots/i);
+    } else if (catLower.includes("kasual") || catLower.includes("sneaker") || catLower.includes("pantofel") || catLower.includes("977")) {
+      patterns.push(/casual\s*shoes/i, /sneakers/i, /loafers/i, /rain\s*boots/i);
+    } else if (catLower.includes("kids") || catLower.includes("children")) {
+      patterns.push(/children.*rain\s*boots/i, /kids.*boots/i, /rain\s*boots/i);
+    } else {
+      patterns.push(/rain\s*boots/i, /work\s*&\s*safety\s*shoes/i, /functional\s*shoes/i);
+    }
+
+    const candidates = Array.from(document.querySelectorAll("label, li, [role='option'], [role='radio'], [role='menuitem'], div[class*='option']"))
+      .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
+
+    for (const rx of patterns) {
+      const hit = candidates.find((el) => rx.test((el.innerText || "").trim()) && !/candle|perfume|fragrance/i.test(el.innerText || ""));
+      if (hit) {
+        hit.click();
+        await sleep(1100);
+        return true;
+      }
+    }
+    return false;
+  }
+
   async function runOnPostForm(p) {
     if (freezeTimer) clearInterval(freezeTimer);
     const lockedFields = [];
 
-    const inputs = Array.from(document.querySelectorAll("input:not([type='file']):not([type='hidden']), textarea"))
+    setProgress(15, "⏳ [1/5] Memilih kategori sepatu Alibaba...");
+    const catPicked = await selectAlibabaPostCategory(p);
+    if (catPicked) setLog(`✓ Kategori sepatu dipilih sesuai ${p.Photobank_Group_Label || p.Category_Path}.`);
+
+    setProgress(35, "⏳ [2/5] Menyuntikkan foto produk...");
+    if (selectedImageUrls.size > 0 && findFileInputsDeep().length > 0) {
+      await injectSelectedPhotos(p);
+      await sleep(500);
+    }
+
+    setProgress(60, "⏳ [3/5] Mengisi judul, keyword, dan atribut...");
+    const inputs = Array.from(document.querySelectorAll("input:not([type='file']):not([type='hidden']):not([type='radio']):not([type='checkbox']), textarea"))
       .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"));
 
-    const findField = (rx) => inputs.find((el) => {
-      const meta = `${el.name || ""} ${el.id || ""} ${el.placeholder || ""} ${el.getAttribute("aria-label") || ""}`.toLowerCase();
+    const findField = (rx, excludeRx = null) => inputs.find((el) => {
+      const meta = getFieldContextLabel(el);
+      if (excludeRx && excludeRx.test(meta)) return false;
       return rx.test(meta);
     });
 
-    const titleEl = findField(/title|product\s*name|subject/);
+    const titleEl = findField(/product\s*name|enter english characters|title|subject/, /keyword/);
     if (titleEl) {
       setReactInputValue(titleEl, p.Product_Name);
       lockedFields.push({ el: titleEl, val: p.Product_Name });
     }
 
-    const moqEl = findField(/moq|min.*order|quantity/);
+    const kwText = [p.Keyword_1, p.Keyword_2, p.Keyword_3].filter(Boolean).join(", ");
+    const kwEl = findField(/product\s*keywords|hidden to buyers|keyword/);
+    if (kwEl && kwText) {
+      setReactInputValue(kwEl, kwText);
+      lockedFields.push({ el: kwEl, val: kwText });
+    }
+
+    const originEl = findField(/place\s*of\s*origin/);
+    if (originEl) {
+      setReactInputValue(originEl, p.attributes?.place_of_origin || "Indonesia");
+      lockedFields.push({ el: originEl, val: p.attributes?.place_of_origin || "Indonesia" });
+    }
+
+    const brandEl = findField(/brand\s*name/);
+    if (brandEl && p.attributes?.brand_name) {
+      setReactInputValue(brandEl, p.attributes.brand_name);
+      lockedFields.push({ el: brandEl, val: p.attributes.brand_name });
+    }
+
+    const modelEl = findField(/model\s*number/);
+    if (modelEl && p.attributes?.model_number) {
+      setReactInputValue(modelEl, p.attributes.model_number);
+      lockedFields.push({ el: modelEl, val: p.attributes.model_number });
+    }
+
+    const weightEl = findField(/product\s*weight/);
+    if (weightEl && p.attributes?.weight_kg) {
+      setReactInputValue(weightEl, String(p.attributes.weight_kg));
+      lockedFields.push({ el: weightEl, val: String(p.attributes.weight_kg) });
+    }
+
+    setProgress(80, "⏳ [4/5] Mengisi MOQ & harga FOB USD...");
+    const moqEl = findField(/moq|min\.?\s*order|quantity\s*price|>=|min.*qty/, /price/);
     if (moqEl) {
       setReactInputValue(moqEl, String(p.MOQ));
       lockedFields.push({ el: moqEl, val: String(p.MOQ) });
     }
 
-    const priceMinEl = findField(/min.*price|price.*min|fob.*min|lower/);
+    const priceMinEl = findField(/min.*price|price.*min|fob.*min|lower|unit\s*price|price\s*\(usd\)/, /max.*price|higher/);
     if (priceMinEl) {
       setReactInputValue(priceMinEl, String(p.Price_Min));
       lockedFields.push({ el: priceMinEl, val: String(p.Price_Min) });
@@ -826,6 +964,23 @@
     if (priceMaxEl) {
       setReactInputValue(priceMaxEl, String(p.Price_Max));
       lockedFields.push({ el: priceMaxEl, val: String(p.Price_Max) });
+    }
+
+    setProgress(92, "⏳ [5/5] Mengisi deskripsi B2B...");
+    const descText = buildAlibabaPublishDescription(p);
+    const descArea = findField(/detailed\s*description|product\s*description/);
+    if (descArea) {
+      setReactInputValue(descArea, descText);
+      lockedFields.push({ el: descArea, val: descText });
+    } else {
+      const ceDesc = Array.from(document.querySelectorAll("[contenteditable='true']"))
+        .filter((el) => el.offsetParent !== null && !el.closest("#hots-ext-panel"))
+        .pop();
+      if (ceDesc) {
+        ceDesc.focus();
+        ceDesc.innerText = descText;
+        ceDesc.dispatchEvent(new InputEvent("input", { bubbles: true, data: descText, inputType: "insertText" }));
+      }
     }
 
     lockedFields.forEach((f) => f.el.classList.add("hots-freeze-locked"));
@@ -838,6 +993,7 @@
       }
     }, 400);
 
+    setProgress(100, `✓ Selesai (${lockedFields.length} field terisi & terkunci)`);
     const msg = `✓ Auto-Fill & Freeze aktif pada ${lockedFields.length} field ${p.master_sku} (MOQ: ${p.MOQ}, FOB: $${p.Price_Min}–$${p.Price_Max}).`;
     setLog(msg);
     return { ok: true, message: msg };
@@ -846,13 +1002,16 @@
   async function executeAutoRun(skuOverride) {
     if (isPaused) {
       const msg = "⏸️ Status sedang PAUSE. Klik ▶️ Resume untuk melanjutkan.";
+      setProgress(0, "⏸️ Dijeda");
       setLog(msg);
       return { ok: false, message: msg };
     }
     const sku = skuOverride || skuSelect.value || "MST-001";
+    setProgress(10, `⏳ Memuat data ${sku} dari bridge...`);
     const prodRes = await sendMsg({ type: "BRIDGE_PRODUCT", sku });
     if (!prodRes || !prodRes.ok || !prodRes.data || !prodRes.data.success) {
       const msg = `❌ Gagal mengambil data ${sku} dari localhost:8888.`;
+      setProgress(0, "❌ Gagal memuat SKU");
       setLog(msg);
       return { ok: false, message: msg };
     }
@@ -861,17 +1020,38 @@
 
     if (pageType === "publish_plan") {
       if (findPublishDescriptionTextarea()) {
+        setProgress(85, "⏳ Mengisi deskripsi B2B...");
         fillPublishPlanDescription(p);
+        setProgress(100, "✓ Deskripsi B2B terisi");
         return { ok: true, message: `Deskripsi B2B ${p.master_sku} diisi.` };
       }
-      return await injectSelectedPhotos(p);
+      setProgress(50, "⏳ Menyuntikkan foto ke publish-plan...");
+      const r = await injectSelectedPhotos(p);
+      setProgress(r.ok ? 100 : 0, r.ok ? "✓ Foto tersuntik" : "⚠️ Gagal suntik foto");
+      return r;
     }
-    if (pageType === "photobank") return await injectSelectedPhotos(p);
-    if (pageType === "list") return await syncAlibabaProducts();
+    if (pageType === "photobank") {
+      setProgress(50, "⏳ Upload foto ke Photobank...");
+      const r = await injectSelectedPhotos(p);
+      setProgress(r.ok ? 100 : 0, r.ok ? "✓ Foto terkirim" : "⚠️ Gagal upload");
+      return r;
+    }
+    if (pageType === "list") {
+      setProgress(50, "⏳ Sinkronisasi daftar produk...");
+      const r = await syncAlibabaProducts();
+      setProgress(r.ok ? 100 : 0, r.ok ? "✓ Sinkronisasi selesai" : "⚠️ Gagal sync");
+      return r;
+    }
     if (pageType === "post") return await runOnPostForm(p);
-    if (pageType === "flow") return await runOnFlow(p);
+    if (pageType === "flow") {
+      setProgress(45, `⏳ Mengirim Hero & 4-Slot Prompt (${p.master_sku})...`);
+      const r = await runOnFlow(p);
+      setProgress(r.ok ? 80 : 0, r.ok ? "⏳ Menunggu hasil Flow & Download..." : "⚠️ Gagal di Flow");
+      return r;
+    }
 
     const msg = `Halaman ini (${host}) tidak memiliki target auto-fill langsung.`;
+    setProgress(0, "ℹ️ Tidak ada target");
     setLog(msg);
     return { ok: false, message: msg };
   }
